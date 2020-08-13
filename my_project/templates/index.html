@@ -1,10 +1,102 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>멍이와 나🐶</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css"/>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+    <style>
+        #doggo_icon {
+            width: 300px;
+            height: 300px;
+        }
+
+    </style>
+    <script>
+        $(document).ready(function () {
+            show_today()
+        });
+
+        function show_today() {
+            let today = new Date();
+            let year = today.getFullYear();
+            let month = today.getMonth() + 1;
+            let date = today.getDate();
+            let day = today.getDay();
+            let hours = today.getHours();
+            let minutes = today.getMinutes();
+            let seconds = today.getSeconds();
+            $('#today').append(today.toLocaleDateString());
+        }
+
+        function showStar() {
+            $('#star-box').empty()
+            $.ajax({
+                type: 'GET',
+                url: '/api/list',
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        stars = response['star_list'];
+                        for (let i = 0; i < stars.length; i++) {
+                            let star = stars[i];
+
+                            $('#star-box').append();
+                        }
+                        alert(response['msg']);
+                    }
+                }
+            });
+        }
+
+        function likeStar(name) {
+            $.ajax({
+                type: 'POST',
+                url: '/api/like',
+                data: {'name_give': name},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        let msg = response['msg'];
+                        alert(msg);
+                        location.reload();
+                    }
+                }
+            });
+        }
+
+        function deleteStar(name) {
+            $.ajax({
+                type: 'POST',
+                url: '/api/delete',
+                data: {'name_give': name},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        window.location.reload();
+                        let msg = response['msg'];
+                        alert(msg);
+                    }
+                }
+            });
+        }
+
+    </script>
 </head>
 <body>
+
+<div id="title">
+    <h1>멍이와 나</h1>
+    <img id="doggo_icon" src="../static/Doggo_icon.png" alt="아이콘 이미지">
+
+</div>
+<div>
+    오늘은 <span id="today"></span> 입니다🐶
+</div>
+
 
 </body>
 </html>
