@@ -6,13 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css"/>
-    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 
     <style>
+
         #doggo_icon {
             width: 300px;
             height: 300px;
+        }
+
+        .wrap {
+            margin: 10px auto;
+            width: 1000px;
+            text-align: center;
         }
 
     </style>
@@ -86,15 +91,15 @@
     </script>
 </head>
 <body>
-<h1>멍이와 나</h1>
+<div class="wrap">
+    <h1>멍이와 나</h1>
+    <div id="title">
+        <img id="doggo_icon" src="../static/Doggo_icon.png" alt="아이콘 이미지">
+    </div>
 
-<div id="title">
-    <img id="doggo_icon" src="../static/Doggo_icon.png" alt="아이콘 이미지">
-</div>
-<div>
     오늘은 <span id="today"></span> 입니다🐶
+
+
 </div>
-
-
 </body>
 </html>
