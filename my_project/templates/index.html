@@ -8,16 +8,32 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <style>
+        h1 {
+            display: inline;
+        }
+
+        #title {
+            margin: 30px;
+        }
 
         #doggo_icon {
-            width: 300px;
-            height: 300px;
+            width: 55px;
+            height: 55px;
+            float: left;
+        }
+
+        #user_icon {
+            width: 50px;
+            height: 50px;
+            float: right;
         }
 
         .wrap {
             margin: 10px auto;
-            width: 1000px;
+            padding: 30px;
+            width: 500px;
             text-align: center;
+            border: solid black;
         }
 
     </style>
@@ -35,7 +51,7 @@
             let hours = today.getHours();
             let minutes = today.getMinutes();
             let seconds = today.getSeconds();
-            $('#today').append(today.toLocaleDateString());
+            $('#today').append(year + '년 ' + month + '월 ' + date + '일');
         }
 
         function showStar() {
@@ -92,12 +108,20 @@
 </head>
 <body>
 <div class="wrap">
-    <h1>멍이와 나</h1>
+
     <div id="title">
         <img id="doggo_icon" src="../static/Doggo_icon.png" alt="아이콘 이미지">
+        <h1>멍이와 나</h1>
+        <img id="user_icon" src="../static/user_icon.png" alt="아이콘 이미지">
+        <br><br><br>
+        오늘은 <span id="today"></span> 이에요.<br>
+        오늘 날씨는 비가 오니 우산을 꼭 챙겨 다녀요. 멍멍!🐶
     </div>
+    <div id="schedules">
+        <div class="schedule">
 
-    오늘은 <span id="today"></span> 입니다🐶
+        </div>
+    </div>
 
 
 </div>
