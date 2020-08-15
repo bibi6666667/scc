@@ -1,96 +1,130 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-    <title>멍이와 나🐶</title>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>마이 페이보릿 무비스타 | 프론트-백엔드 연결 마지막 예제!</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css"/>
+        <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+        <style>
+            .center {
+                text-align: center;
+            }
 
+            .star-list {
+                width: 500px;
+                margin: 20px auto 0 auto;
+            }
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css"/>
-    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-    <style>
+            .star-name {
+                display: inline-block;
+            }
 
+            .star-name:hover {
+                text-decoration: underline;
+            }
 
-    </style>
-    <script>
-        $(document).ready(function () {
-            show_today()
-        });
+            .card {
+                margin-bottom: 15px;
+            }
+        </style>
+        <script>
+            $(document).ready(function () {
+                // index.html 로드가 완료되면 자동으로 showStar() 함수를 호출합니다.
+                showStar();
+            });
 
-        function show_today() {
-            let today = new Date();
-            let year = today.getFullYear();
-            let month = today.getMonth() + 1;
-            let date = today.getDate();
-            let day = today.getDay();
-            let hours = today.getHours();
-            let minutes = today.getMinutes();
-            let seconds = today.getSeconds();
-            $('#today').append(today.toLocaleDateString());
-        }
-
-        function showStar() {
-            $('#star-box').empty()
-            $.ajax({
-                type: 'GET',
-                url: '/api/list',
-                data: {},
-                success: function (response) {
-                    if (response['result'] == 'success') {
-                        stars = response['star_list'];
-                        for (let i = 0; i < stars.length; i++) {
-                            let star = stars[i];
-
-                            $('#star-box').append();
+            function showStar() {
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/list',
+                    data: {},
+                    success: function (response) {
+                        if (response['result'] == 'success') {
+                            let msg = response['msg'];
+                            alert(msg);
                         }
-                        alert(response['msg']);
                     }
-                }
-            });
-        }
+                });
+            }
 
-        function likeStar(name) {
-            $.ajax({
-                type: 'POST',
-                url: '/api/like',
-                data: {'name_give': name},
-                success: function (response) {
-                    if (response['result'] == 'success') {
-                        let msg = response['msg'];
-                        alert(msg);
-                        location.reload();
+            function likeStar(name) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/like',
+                    data: {},
+                    success: function (response) {
+                        if (response['result'] == 'success') {
+                            let msg = response['msg'];
+                            alert(msg);
+                        }
                     }
-                }
-            });
-        }
+                });
+            }
 
-        function deleteStar(name) {
-            $.ajax({
-                type: 'POST',
-                url: '/api/delete',
-                data: {'name_give': name},
-                success: function (response) {
-                    if (response['result'] == 'success') {
-                        window.location.reload();
-                        let msg = response['msg'];
-                        alert(msg);
+            function deleteStar(name) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/delete',
+                    data: {},
+                    success: function (response) {
+                        if (response['result'] == 'success') {
+                            let msg = response['msg'];
+                            alert(msg);
+                        }
                     }
-                }
-            });
-        }
+                });
+            }
 
-    </script>
-</head>
-<body>
-<div id="title">
-    <img src="my_project/static/멍이(아이콘).png" alt="아이콘 이미지">
-    <h1>멍이와 나</h1>
-</div>
-<div>
-    오늘은 <span id="today"></span> 입니다🐶
-</div>
-
-
-</body>
+        </script>
+    </head>
+    <body>
+        <section class="hero is-warning">
+            <div class="hero-body">
+                <div class="container center">
+                    <h1 class="title">
+                        마이 페이보릿 무비스타😆
+                    </h1>
+                    <h2 class="subtitle">
+                        순위를 매겨봅시다
+                    </h2>
+                </div>
+            </div>
+        </section>
+        <div class="star-list" id="star-box">
+            <div class="card">
+                <div class="card-content">
+                    <div class="media">
+                        <div class="media-left">
+                            <figure class="image is-48x48">
+                                <img
+                                        src="https://search.pstatic.net/common/?src=https%3A%2F%2Fssl.pstatic.net%2Fsstatic%2Fpeople%2Fportrait%2F201807%2F20180731143610623-6213324.jpg&type=u120_150&quality=95"
+                                        alt="Placeholder image"
+                                />
+                            </figure>
+                        </div>
+                        <div class="media-content">
+                            <a href="#" target="_blank" class="star-name title is-4">김다미 (좋아요: 3)</a>
+                            <p class="subtitle is-6">안녕, 나의 소울메이트(가제)</p>
+                        </div>
+                    </div>
+                </div>
+                <footer class="card-footer">
+                    <a href="#" onclick="likeStar('김다미')" class="card-footer-item has-text-info">
+                        위로!
+                        <span class="icon">
+              <i class="fas fa-thumbs-up"></i>
+            </span>
+                    </a>
+                    <a href="#" onclick="deleteStar('김다미')" class="card-footer-item has-text-danger">
+                        삭제
+                        <span class="icon">
+              <i class="fas fa-ban"></i>
+            </span>
+                    </a>
+                </footer>
+            </div>
+        </div>
+    </body>
 </html>

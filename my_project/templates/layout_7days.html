@@ -8,15 +8,25 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <style>
-       h1 {
+        h1 {
             display: inline;
         }
 
-        .icon{
+        table {
+            border: 1px solid darkgray;
+        }
+
+        th, td {
+            border: 1px solid darkgray;
+            padding: 10px;
+        }
+
+        .icon {
             width: 50px;
             height: 50px;
             margin: 10px 30px;
         }
+
         .wrap {
             margin: 10px auto;
             padding: 30px;
@@ -28,7 +38,7 @@
         .schedule {
             margin: 15px;
             padding: 10px;
-            border: 3px darkgray double;
+            border: 3px lightgray double;
         }
 
         .schedule_date {
@@ -131,7 +141,7 @@
 <div class="wrap">
 
     <div id="title">
-        <img id="doggo_icon" class="icon" src="../static/Doggo_icon.png" alt="아이콘 이미지">
+        <img id="doggo_icon" src="../static/Doggo_icon.png" alt="아이콘 이미지">
         <h1>멍이와 나</h1>
         <img id="user_icon" class="icon" src="../static/user_icon.png" alt="아이콘 이미지">
         <br><br><br>
@@ -144,34 +154,50 @@
         <img class="icon" src="../static/calendar_30.png" alt="30일 레이아웃 아이콘">
     </div>
     <div id="schedules">
-        <div class="schedule">
-            <div class="schedule_date">15일 (토)</div>
-            <li>스파르타코딩클럽 - 프로젝트 계획 짜기!</li>
-        </div>
-        <div class="schedule">
-            <div class="schedule_date">16일 (일)</div>
-            <li>(21:00~)친구들과 놀기!</li>
-        </div>
-        <div class="schedule">
-            <div class="schedule_date">18일 (화)</div>
-            <li>소고기 사오기!</li>
-        </div>
-        <div class="schedule">
-            <div class="schedule_date">19일 (수)</div>
-            <li>(19:30~22:30)스파르타코딩클럽 - 수업</li>
-        </div>
-        <div class="schedule">
-            <div class="schedule_date">20일 (목)</div>
-            <li>밀린 집안일 하기 (빨래,청소)</li>
-            <li>이마트에서 장 봐오기</li>
-        </div>
-        <div class="schedule">
-            <div class="schedule_date">31일 (월)</div>
-            <li>공포의 31데이..</li>
-        </div>
+        <table>
+            <colgroup style="word-break: break-all">
+                <col width="100px">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>16일(일)</th>
+                <th>17일(월)</th>
+                <th>18일(화)</th>
+                <th>19일(수)</th>
+                <th>20일(목)</th>
+                <th>21일(금)</th>
+                <th>22일(토)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <li>(21:00~)친구들과 놀기!</li>
+                </td>
+                <td>
+                    <li></li>
+                </td>
+                <td>
+                    <li>소고기 사오기!</li>
+                </td>
+                <td>
+                    <li>(19:30~22:30)스파르타코딩클럽 - 수업</li>
+                </td>
+                <td>
+                    <li>밀린 집안일 하기 (빨래,청소)</li>
+                    <li>이마트에서 장 봐오기</li>
+                </td>
+                <td>
+                    <li></li>
+                </td>
+                <td>
+                    <li></li>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
     </div>
-
-
 </div>
 </body>
 </html>
