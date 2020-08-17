@@ -6,13 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet">
 
     <style>
+        * {
+            font-size: 15px;
+        }
+
         h1 {
+            font-family: 'Gamja Flower', cursive;
             display: inline;
+            font-size: 50px;
         }
 
         table {
+            table-layout: fixed;
+            word-break: break-all;
             border: 1px solid darkgray;
         }
 
@@ -51,7 +60,7 @@
             margin: 30px;
         }
 
-        #title_footer {
+        #title_footer, #input_schedule {
             border: dashed black 1px;
             padding: 15px;
             margin: 10px;
@@ -67,72 +76,52 @@
             float: right;
         }
 
+        #schedule_month {
+            font-weight: bold;
+            font-size: 30px;
+        }
+
     </style>
     <script>
         $(document).ready(function () {
-            show_today()
+            show_date()
+            show_month()
+            show_day()
+            month_calendar()
         });
 
-        function show_today() {
+        function show_month() {
+            let today = new Date()
+            let month = today.getMonth() + 1;
+            $('#schedule_month').append(month + '월');
+        }
+
+        function show_date() {
             let today = new Date();
             let year = today.getFullYear();
             let month = today.getMonth() + 1;
             let date = today.getDate();
+            $('#date').append(year + '년 ' + month + '월 ' + date + '일');
+        }
+
+        function show_day() {
+            let today = new Date();
             let day = today.getDay();
-            let hours = today.getHours();
-            let minutes = today.getMinutes();
-            let seconds = today.getSeconds();
-            $('#today').append(year + '년 ' + month + '월 ' + date + '일');
-        }
-
-        function showStar() {
-            $('#star-box').empty()
-            $.ajax({
-                type: 'GET',
-                url: '/api/list',
-                data: {},
-                success: function (response) {
-                    if (response['result'] == 'success') {
-                        stars = response['star_list'];
-                        for (let i = 0; i < stars.length; i++) {
-                            let star = stars[i];
-
-                            $('#star-box').append();
-                        }
-                        alert(response['msg']);
-                    }
-                }
-            });
-        }
-
-        function likeStar(name) {
-            $.ajax({
-                type: 'POST',
-                url: '/api/like',
-                data: {'name_give': name},
-                success: function (response) {
-                    if (response['result'] == 'success') {
-                        let msg = response['msg'];
-                        alert(msg);
-                        location.reload();
-                    }
-                }
-            });
-        }
-
-        function deleteStar(name) {
-            $.ajax({
-                type: 'POST',
-                url: '/api/delete',
-                data: {'name_give': name},
-                success: function (response) {
-                    if (response['result'] == 'success') {
-                        window.location.reload();
-                        let msg = response['msg'];
-                        alert(msg);
-                    }
-                }
-            });
+            if (day = 0) {
+                $('#day').append('일요일')
+            } else if (day = 1) {
+                $('#day').append('월요일')
+            } else if (day = 2) {
+                $('#day').append('화요일')
+            } else if (day = 3) {
+                $('#day').append('수요일')
+            } else if (day = 4) {
+                $('#day').append('목요일')
+            } else if (day = 5) {
+                $('#day').append('금요일')
+            } else if (day = 6) {
+                $('#day').append('토요일')
+            }
         }
 
     </script>
@@ -146,27 +135,81 @@
         <img id="user_icon" class="icon" src="../static/user_icon.png" alt="아이콘 이미지">
         <br><br><br>
         <div id="title_footer">
-            오늘은 <span id="today"></span> 이에요.<br>
+            오늘은 <span id="date"></span>, <span id="day"></span>이에요.<br>
             오늘은 비가 오니 우산을 꼭 챙겨 다녀요. 멍멍!🐶
         </div>
+        <form id="input_schedule">
+            <div>📝<br><br>
+                <h3>🐶어떤 할 일을 적어둘까요?</h3><br>
+                <input type="text" width="300px" name="contents" placeholder="멍멍! 할 일이 뭔가요?"><br><br>
+                언제부터 해야 하나요?(시작일)<br>
+                <input type="date" name="start_date"><input type="time" name="start_time"> <br><br>
+                언제까지 해야 하나요?(종료일)<br>
+                <input type="date" name="end_date"><input type="time" name="end_time"><br>
+                종일!<input type="checkbox" name=""><br><br>
+                <h3>🐕잊지 않게 알려드릴게요!</h3><br>
+
+                <select name="alert_1_day">
+                    <option value="" selected disabled hidden>언제 알려드릴까요?</option>
+                    <option value="day_ago">스케줄 당일에 알려줘!</option>
+                    <option value="day_ago">1일 전에 알려줘!</option>
+                    <option value="3days_ago">3일 전에 알려줘!</option>
+                    <option value="week_ago">1주일 전에 알려줘!</option>
+                </select>
+                <input type="time" name="alert_1_time"><br>
+                카카오톡 메시지 알림 <input type="radio" name="alert_how" value="katalk">
+                이메일 알림 <input type="radio" name="alert_how" value="email"><br><br>
+
+                <select name="alert_2_day">
+                    <option value="" selected disabled hidden>한 번 더 알려드릴까요?</option>
+                    <option value="day_ago">스케줄 당일에 알려줘!</option>
+                    <option value="day_ago">1일 전에 알려줘!</option>
+                    <option value="3days_ago">3일 전에 알려줘!</option>
+                    <option value="week_ago">1주일 전에 알려줘!</option>
+                </select>
+                <input type="time" name="alert_2_time"><br>
+                카카오톡 메시지 알림 <input type="radio" name="alert_how" value="katalk">
+                이메일 알림 <input type="radio" name="alert_how" value="email"><br><br>
+                <textarea name="memo" placeholder="메모를 더 남길 수 있어요. 멍!" cols="30" rows="5"></textarea><br><br>
+                <input type="submit" value="저장!🐾">
+            </div>
+        </form>
         <img class="icon" src="../static/calendar_1.png" alt="1일 레이아웃 아이콘">
         <img class="icon" src="../static/calendar_7.png" alt="7일 레이아웃 아이콘">
         <img class="icon" src="../static/calendar_30.png" alt="30일 레이아웃 아이콘">
     </div>
     <div id="schedules">
         <table>
-            <colgroup style="word-break: break-all">
-                <col width="100px">
+            <colgroup>
+                <col width="14%">
+                <col width="14%">
+                <col width="14%">
+                <col width="14%">
+                <col width="14%">
+                <col width="14%">
+                <col width="14%">
             </colgroup>
             <thead>
             <tr>
-                <th>16일(일)</th>
-                <th>17일(월)</th>
-                <th>18일(화)</th>
-                <th>19일(수)</th>
-                <th>20일(목)</th>
-                <th>21일(금)</th>
-                <th>22일(토)</th>
+                <th id="schedule_month" colspan="7"></th>
+            </tr>
+            <tr>
+                <th>Sun(일)</th>
+                <th>Mon(월)</th>
+                <th>The(화)</th>
+                <th>Wed(수)</th>
+                <th>Thu(목)</th>
+                <th>Fri(금)</th>
+                <th>Sat(토)</th>
+            </tr>
+            <tr>
+                <th>16일</th>
+                <th>17일</th>
+                <th>18일</th>
+                <th>19일</th>
+                <th>20일</th>
+                <th>21일</th>
+                <th>22일</th>
             </tr>
             </thead>
             <tbody>
