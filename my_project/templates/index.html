@@ -67,6 +67,9 @@
             font-weight: bold;
             font-size: 30px;
         }
+        #input_schedule{
+            display: none;
+        }
 
     </style>
     <script>
@@ -94,22 +97,31 @@
         function show_day() {
             let today = new Date();
             let day = today.getDay();
-            if (day = 0) {
+            if (day == 0) {
                 $('#day').append('일요일')
-            } else if (day = 1) {
+            } else if (day == 1) {
                 $('#day').append('월요일')
-            } else if (day = 2) {
+            } else if (day == 2) {
                 $('#day').append('화요일')
-            } else if (day = 3) {
+            } else if (day == 3) {
                 $('#day').append('수요일')
-            } else if (day = 4) {
+            } else if (day == 4) {
                 $('#day').append('목요일')
-            } else if (day = 5) {
+            } else if (day == 5) {
                 $('#day').append('금요일')
-            } else if (day = 6) {
+            } else if (day == 6) {
                 $('#day').append('토요일')
             }
         }
+
+        function open_close() {
+            if ($('#input_schedule').css('display') == 'block') {
+                $('#input_schedule').hide();
+            } else {
+                $('#input_schedule').show();
+            }
+        }
+
     </script>
 </head>
 <body>
@@ -124,8 +136,10 @@
             오늘은 <span id="date"></span>, <span id="day"></span>이에요.<br>
             오늘은 비가 오니 우산을 꼭 챙겨 다녀요. 멍멍!🐶
         </div>
-        <form id="input_schedule">
-            <div>📝<br><br>
+        <button onclick="open_close()" id="btn-new-sche" type="button">일정을 적어주세요📝
+        </button>
+        <div id="input_schedule">
+            <form>
                 <h3>🐶어떤 할 일을 적어둘까요?</h3><br>
                 <input type="text" width="300px" name="contents" placeholder="멍멍! 할 일이 뭔가요?"><br><br>
                 언제부터 해야 하나요?(시작일)<br>
@@ -158,8 +172,8 @@
                 이메일 알림 <input type="radio" name="alert_how" value="email"><br><br>
                 <textarea name="memo" placeholder="메모를 더 남길 수 있어요. 멍!" cols="30" rows="5"></textarea><br><br>
                 <input type="submit" value="저장!🐾">
-            </div>
-        </form>
+            </form>
+        </div><br>
         <img class="icon" src="../static/calendar_1.png" alt="1일 레이아웃 아이콘">
         <img class="icon" src="../static/calendar_7.png" alt="7일 레이아웃 아이콘">
         <img class="icon" src="../static/calendar_30.png" alt="30일 레이아웃 아이콘">
