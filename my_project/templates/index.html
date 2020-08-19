@@ -12,10 +12,22 @@
         * {
             font-size: 15px;
         }
+
         h1 {
             font-family: 'Gamja Flower', cursive;
             display: inline;
             font-size: 50px;
+        }
+
+        table {
+            table-layout: fixed;
+            word-break: break-all;
+            border: 1px solid darkgray;
+        }
+
+        th, td {
+            border: 1px solid darkgray;
+            padding: 10px;
         }
 
         .icon {
@@ -63,13 +75,15 @@
         #user_icon {
             float: right;
         }
-        #schedule_month{
+
+        #schedule_month {
             font-weight: bold;
             font-size: 30px;
         }
-        #input_schedule{
+
+        /*#input_schedule {
             display: none;
-        }
+        } */
 
     </style>
     <script>
@@ -77,7 +91,6 @@
             show_date()
             show_month()
             show_day()
-            month_calendar()
         });
 
         function show_month() {
@@ -122,6 +135,59 @@
             }
         }
 
+        ////////////API 역할을 하는 부분
+        //1. 일정 생성(Create) - /makesche (POST)
+        function makesche() {
+            let todo = $('#todo').val();
+            let start_date = $('#start_date').val();
+            let start_time = $('#start_time').val();
+            let end_date = $('#end_date').val();
+            let end_time = $('#end_time').val();
+            let startend = $('#startend').val();
+            let alert1_day = $('#alert_1_day').val();
+            let alert1_time = $('#alert_1_time').val();
+            // 알림1-카톡/이메일알림여부
+            let alert2_day = $('#alert_2_day option:selected').val();
+            let alert2_time = $('#alert_2_time').val();
+            // 알림2-카톡/이메일알림여부
+            let memo = $('#memo').val();
+            $.ajax({
+                type: "POST",
+                url: "/makesche",
+                data: {
+                    'todo': todo,
+                    'start_date': start_date,
+                    'start_time': start_time,
+                    'end_date': end_date,
+                    'end_time': end_time,
+                    'startend': startend,
+                    'alert1_day': alert1_day,
+                    'alert1_time': alert1_time,
+                    'alert2_day': alert2_day,
+                    'alert2_time': alert2_time,
+                    'memo': memo
+                },
+                success: function (response) { // 성공하면
+                    if (response["result"] == "success") {
+                        alert(response["msg"]);
+                        // window.location.reload();
+                    } else {
+                        alert('서버 오류!')
+                    }
+                }
+            })
+        }
+
+        //2. 일정 조회(Read) - /readsche (GET)
+
+        //3. 일정 검색(Read?) - /findsche (GET)
+        //4. 일정 변경(Update) - /fixsche (POST)
+        //5. 일정 삭제(Delete) - /delsche(POST)
+        //6. 알림 보내기?
+        ///////////위의 것들 다 했다면
+        //7. 날씨 조회 /wether (GET)
+        //8. 회원시스템 시작
+
     </script>
 </head>
 <body>
@@ -139,41 +205,40 @@
         <button onclick="open_close()" id="btn-new-sche" type="button">일정을 적어주세요📝
         </button>
         <div id="input_schedule">
-            <form>
-                <h3>🐶어떤 할 일을 적어둘까요?</h3><br>
-                <input type="text" width="300px" name="contents" placeholder="멍멍! 할 일이 뭔가요?"><br><br>
-                언제부터 해야 하나요?(시작일)<br>
-                <input type="date" name="start_date"><input type="time" name="start_time"> <br><br>
-                언제까지 해야 하나요?(종료일)<br>
-                <input type="date" name="end_date"><input type="time" name="end_time"><br>
-                종일!<input type="checkbox" name=""><br><br>
-                <h3>🐕잊지 않게 알려드릴게요!</h3><br>
 
-                <select name="alert_1_day">
-                    <option value="" selected disabled hidden>언제 알려드릴까요?</option>
-                    <option value="day_ago">스케줄 당일에 알려줘!</option>
-                    <option value="day_ago">1일 전에 알려줘!</option>
-                    <option value="3days_ago">3일 전에 알려줘!</option>
-                    <option value="week_ago">1주일 전에 알려줘!</option>
-                </select>
-                <input type="time" name="alert_1_time"><br>
-                카카오톡 메시지 알림 <input type="radio" name="alert_how" value="katalk">
-                이메일 알림 <input type="radio" name="alert_how" value="email"><br><br>
+            <h3>🐶어떤 일정을 적어둘까요?</h3><br>
+            <input type="text" width="300px" id="todo" placeholder="멍멍! 할 일이 뭔가요?"><br><br>
+            언제부터 해야 하나요?(시작일)<br>
+            <input type="date" id="start_date"><input type="time" id="start_time"> <br><br>
+            언제까지 해야 하나요?(종료일)<br>
+            <input type="date" id="end_date"><input type="time" id="end_time"><br>
+            종일!(시작일=종료일)<input type="checkbox" id="startend"><br><br>
+            <h3>🐕잊지 않게 알려드릴게요!</h3><br>
+            <select id="alert_1_day">
+                <option value="" selected disabled hidden>언제 알려드릴까요?</option>
+                <option value="on_day" id="">스케줄 당일에 알려줘!</option>
+                <option value="day_ago" id="">1일 전에 알려줘!</option>
+                <option value="3days_ago" id="">3일 전에 알려줘!</option>
+                <option value="week_ago" id="">1주일 전에 알려줘!</option>
+            </select>
+            <input type="time" id="alert_1_time" ><br>
+            카카오톡 메시지 알림 <input type="radio" name="alert_how" value="katalk">
+            이메일 알림 <input type="radio" name="alert_how" value="email"><br><br>
 
-                <select name="alert_2_day">
-                    <option value="" selected disabled hidden>한 번 더 알려드릴까요?</option>
-                    <option value="day_ago">스케줄 당일에 알려줘!</option>
-                    <option value="day_ago">1일 전에 알려줘!</option>
-                    <option value="3days_ago">3일 전에 알려줘!</option>
-                    <option value="week_ago">1주일 전에 알려줘!</option>
-                </select>
-                <input type="time" name="alert_2_time"><br>
-                카카오톡 메시지 알림 <input type="radio" name="alert_how" value="katalk">
-                이메일 알림 <input type="radio" name="alert_how" value="email"><br><br>
-                <textarea name="memo" placeholder="메모를 더 남길 수 있어요. 멍!" cols="30" rows="5"></textarea><br><br>
-                <input type="submit" value="저장!🐾">
-            </form>
-        </div><br>
+            <select id="alert_2_day">
+                <option value="" selected disabled hidden>한 번 더 알려드릴까요?</option>
+                <option value="on_day">스케줄 당일에 알려줘!</option>
+                <option value="day_ago">1일 전에 알려줘!</option>
+                <option value="3days_ago">3일 전에 알려줘!</option>
+                <option value="week_ago">1주일 전에 알려줘!</option>
+            </select>
+            <input type="time" id="alert_2_time"><br>
+            카카오톡 메시지 알림 <input type="radio" name="alert_how" value="katalk">
+            이메일 알림 <input type="radio" name="alert_how" value="email"><br><br>
+            <textarea id="memo" placeholder="메모를 더 남길 수 있어요. 멍!" cols="30" rows="5"></textarea><br><br>
+            <input type="submit" onclick="makesche()" value="저장!🐾">
+        </div>
+        <br>
         <img class="icon" src="../static/calendar_1.png" alt="1일 레이아웃 아이콘">
         <img class="icon" src="../static/calendar_7.png" alt="7일 레이아웃 아이콘">
         <img class="icon" src="../static/calendar_30.png" alt="30일 레이아웃 아이콘">
@@ -205,9 +270,192 @@
             <div class="schedule_date">31일 (월)</div>
             <li>공포의 31데이..</li>
         </div>
+        <br><br><br><br>
+        <table>
+            <colgroup>
+                <col width="14%">
+                <col width="14%">
+                <col width="14%">
+                <col width="14%">
+                <col width="14%">
+                <col width="14%">
+                <col width="14%">
+            </colgroup>
+            <thead>
+            <tr>
+                <th id="schedule_month" colspan="7"></th>
+            </tr>
+            <tr>
+                <th>Sun(일)</th>
+                <th>Mon(월)</th>
+                <th>The(화)</th>
+                <th>Wed(수)</th>
+                <th>Thu(목)</th>
+                <th>Fri(금)</th>
+                <th>Sat(토)</th>
+            </tr>
+            <tr>
+                <th>16일</th>
+                <th>17일</th>
+                <th>18일</th>
+                <th>19일</th>
+                <th>20일</th>
+                <th>21일</th>
+                <th>22일</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <li>(21:00~)친구들과 놀기!</li>
+                </td>
+                <td>
+                    <li></li>
+                </td>
+                <td>
+                    <li>소고기 사오기!</li>
+                </td>
+                <td>
+                    <li>(19:30~22:30)스파르타코딩클럽 - 수업</li>
+                </td>
+                <td>
+                    <li>밀린 집안일 하기 (빨래,청소)</li>
+                    <li>이마트에서 장 봐오기</li>
+                </td>
+                <td>
+                    <li></li>
+                </td>
+                <td>
+                    <li></li>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <br><br><br><br>
+        <table id="schedules">
+            <colgroup>
+                <col width="14%">
+                <col width="14%">
+                <col width="14%">
+                <col width="14%">
+                <col width="14%">
+                <col width="14%">
+                <col width="14%">
+            </colgroup>
+            <thead>
+            <tr>
+                <th id="schedule_month" colspan="7"></th>
+            </tr>
+            <tr>
+                <th>Sun(일)</th>
+                <th>Mon(월)</th>
+                <th>The(화)</th>
+                <th>Wed(수)</th>
+                <th>Thu(목)</th>
+                <th>Fri(금)</th>
+                <th>Sat(토)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+            </tr>
+            <tbody>
+            <tr>
+                <td></td>
+                <td>
+                </td>
+                <td>
+                </td>
+                <td>
+                </td>
+                <td>
+                </td>
+                <td>
+                </td>
+                <td>
+                </td>
+            </tr>
+            <tr>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+            </tr>
+            <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+                <td class="schedule_date"></td>
+            </tr>
+            <tbody>
+            <tr>
+                <td>
+                    <li>(21:00~)친구들과 놀기!</li>
+                </td>
+                <td>
+                    <li></li>
+                </td>
+                <td>
+                    <li>소고기 사오기!</li>
+                </td>
+                <td>
+                    <li>(19:30~22:30)스파르타코딩클럽 - 수업</li>
+                </td>
+                <td>
+                    <li>밀린 집안일 하기 (빨래,청소)</li>
+                    <li>이마트에서 장 봐오기</li>
+                </td>
+                <td>
+                    <li></li>
+                </td>
+                <td>
+                    <li></li>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
-
-
 </div>
 </body>
 </html>
