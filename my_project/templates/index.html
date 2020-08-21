@@ -76,7 +76,7 @@
             float: right;
         }
 
-        #schedule_month {
+        #month {
             font-weight: bold;
             font-size: 30px;
         }
@@ -96,7 +96,7 @@
         function show_month() {
             let today = new Date()
             let month = today.getMonth() + 1;
-            $('#schedule_month').append(month + '월');
+            $('#month').append(month + '월');
         }
 
         function show_date() {
@@ -133,6 +133,24 @@
             } else {
                 $('#input_schedule').show();
             }
+        }
+
+        function show_1day() {
+            $('#day_layout').show();
+            $('#week_layout').hide();
+            $('#month_layout').hide();
+        }
+
+        function show_7day() {
+            $('#day_layout').hide();
+            $('#week_layout').show();
+            $('#month_layout').hide();
+        }
+
+        function show_30day() {
+            $('#day_layout').hide();
+            $('#week_layout').hide();
+            $('#month_layout').show();
         }
 
         ////////////API 역할을 하는 부분
@@ -179,6 +197,16 @@
         }
 
         //2. 일정 조회(Read) - /readsche (GET)
+        function readsche() {
+            $.ajax({
+                type: "GET",
+                url: '/readsche',
+                data: {},
+                success: function (response) {
+                    let todolist = response['todolist'];
+                }
+            })
+        }
 
         //3. 일정 검색(Read?) - /findsche (GET)
         //4. 일정 변경(Update) - /fixsche (POST)
@@ -221,7 +249,7 @@
                 <option value="3days_ago" id="">3일 전에 알려줘!</option>
                 <option value="week_ago" id="">1주일 전에 알려줘!</option>
             </select>
-            <input type="time" id="alert_1_time" ><br>
+            <input type="time" id="alert_1_time"><br>
             카카오톡 메시지 알림 <input type="radio" name="alert_how" value="katalk">
             이메일 알림 <input type="radio" name="alert_how" value="email"><br><br>
 
@@ -239,222 +267,226 @@
             <input type="submit" onclick="makesche()" value="저장!🐾">
         </div>
         <br>
-        <img class="icon" src="../static/calendar_1.png" alt="1일 레이아웃 아이콘">
-        <img class="icon" src="../static/calendar_7.png" alt="7일 레이아웃 아이콘">
-        <img class="icon" src="../static/calendar_30.png" alt="30일 레이아웃 아이콘">
+        <a href="#" onclick="show_1day()"><img class="icon" src="../static/calendar_1.png" alt="1일 레이아웃 아이콘"></a>
+        <a href="#" onclick="show_7day()"><img class="icon" src="../static/calendar_7.png" alt="7일 레이아웃 아이콘"></a>
+        <a href="#" onclick="show_30day()"><img class="icon" src="../static/calendar_30.png" alt="30일 레이아웃 아이콘"></a>
     </div>
     <div id="schedules">
-        <div id="schedule_month"></div>
-        <div class="schedule">
-            <div class="schedule_date">15일 (토)</div>
-            <li>스파르타코딩클럽 - 프로젝트 계획 짜기!</li>
+        <div id="day_layout">
+            <div id="month"></div>
+            <div class="schedule">
+                <div class="schedule_date">15일 (토)</div>
+                <li>스파르타코딩클럽 - 프로젝트 계획 짜기!</li>
+            </div>
+            <div class="schedule">
+                <div class="schedule_date">16일 (일)</div>
+                <li>(21:00~)친구들과 놀기!</li>
+            </div>
+            <div class="schedule">
+                <div class="schedule_date">18일 (화)</div>
+                <li>소고기 사오기!</li>
+            </div>
+            <div class="schedule">
+                <div class="schedule_date">19일 (수)</div>
+                <li>(19:30~22:30)스파르타코딩클럽 - 수업</li>
+            </div>
+            <div class="schedule">
+                <div class="schedule_date">20일 (목)</div>
+                <li>밀린 집안일 하기 (빨래,청소)</li>
+                <li>이마트에서 장 봐오기</li>
+            </div>
+            <div class="schedule">
+                <div class="schedule_date">31일 (월)</div>
+                <li>공포의 31데이..</li>
+            </div>
         </div>
-        <div class="schedule">
-            <div class="schedule_date">16일 (일)</div>
-            <li>(21:00~)친구들과 놀기!</li>
+        <div id="week_layout">
+            <table>
+                <colgroup>
+                    <col width="14%">
+                    <col width="14%">
+                    <col width="14%">
+                    <col width="14%">
+                    <col width="14%">
+                    <col width="14%">
+                    <col width="14%">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th id="month" colspan="7"></th>
+                </tr>
+                <tr>
+                    <th>Sun(일)</th>
+                    <th>Mon(월)</th>
+                    <th>The(화)</th>
+                    <th>Wed(수)</th>
+                    <th>Thu(목)</th>
+                    <th>Fri(금)</th>
+                    <th>Sat(토)</th>
+                </tr>
+                <tr>
+                    <th>16일</th>
+                    <th>17일</th>
+                    <th>18일</th>
+                    <th>19일</th>
+                    <th>20일</th>
+                    <th>21일</th>
+                    <th>22일</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <li>(21:00~)친구들과 놀기!</li>
+                    </td>
+                    <td>
+                        <li></li>
+                    </td>
+                    <td>
+                        <li>소고기 사오기!</li>
+                    </td>
+                    <td>
+                        <li>(19:30~22:30)스파르타코딩클럽 - 수업</li>
+                    </td>
+                    <td>
+                        <li>밀린 집안일 하기 (빨래,청소)</li>
+                        <li>이마트에서 장 봐오기</li>
+                    </td>
+                    <td>
+                        <li></li>
+                    </td>
+                    <td>
+                        <li></li>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
-        <div class="schedule">
-            <div class="schedule_date">18일 (화)</div>
-            <li>소고기 사오기!</li>
+        <div id="month_layout">
+            <table id="schedules">
+                <colgroup>
+                    <col width="14%">
+                    <col width="14%">
+                    <col width="14%">
+                    <col width="14%">
+                    <col width="14%">
+                    <col width="14%">
+                    <col width="14%">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th id="month" colspan="7"></th>
+                </tr>
+                <tr>
+                    <th>Sun(일)</th>
+                    <th>Mon(월)</th>
+                    <th>The(화)</th>
+                    <th>Wed(수)</th>
+                    <th>Thu(목)</th>
+                    <th>Fri(금)</th>
+                    <th>Sat(토)</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                </tr>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                </tr>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                    <td class="schedule_date"></td>
+                </tr>
+                <tbody>
+                <tr>
+                    <td>
+                        <li>(21:00~)친구들과 놀기!</li>
+                    </td>
+                    <td>
+                        <li></li>
+                    </td>
+                    <td>
+                        <li>소고기 사오기!</li>
+                    </td>
+                    <td>
+                        <li>(19:30~22:30)스파르타코딩클럽 - 수업</li>
+                    </td>
+                    <td>
+                        <li>밀린 집안일 하기 (빨래,청소)</li>
+                        <li>이마트에서 장 봐오기</li>
+                    </td>
+                    <td>
+                        <li></li>
+                    </td>
+                    <td>
+                        <li></li>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
-        <div class="schedule">
-            <div class="schedule_date">19일 (수)</div>
-            <li>(19:30~22:30)스파르타코딩클럽 - 수업</li>
-        </div>
-        <div class="schedule">
-            <div class="schedule_date">20일 (목)</div>
-            <li>밀린 집안일 하기 (빨래,청소)</li>
-            <li>이마트에서 장 봐오기</li>
-        </div>
-        <div class="schedule">
-            <div class="schedule_date">31일 (월)</div>
-            <li>공포의 31데이..</li>
-        </div>
-        <br><br><br><br>
-        <table>
-            <colgroup>
-                <col width="14%">
-                <col width="14%">
-                <col width="14%">
-                <col width="14%">
-                <col width="14%">
-                <col width="14%">
-                <col width="14%">
-            </colgroup>
-            <thead>
-            <tr>
-                <th id="schedule_month" colspan="7"></th>
-            </tr>
-            <tr>
-                <th>Sun(일)</th>
-                <th>Mon(월)</th>
-                <th>The(화)</th>
-                <th>Wed(수)</th>
-                <th>Thu(목)</th>
-                <th>Fri(금)</th>
-                <th>Sat(토)</th>
-            </tr>
-            <tr>
-                <th>16일</th>
-                <th>17일</th>
-                <th>18일</th>
-                <th>19일</th>
-                <th>20일</th>
-                <th>21일</th>
-                <th>22일</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>
-                    <li>(21:00~)친구들과 놀기!</li>
-                </td>
-                <td>
-                    <li></li>
-                </td>
-                <td>
-                    <li>소고기 사오기!</li>
-                </td>
-                <td>
-                    <li>(19:30~22:30)스파르타코딩클럽 - 수업</li>
-                </td>
-                <td>
-                    <li>밀린 집안일 하기 (빨래,청소)</li>
-                    <li>이마트에서 장 봐오기</li>
-                </td>
-                <td>
-                    <li></li>
-                </td>
-                <td>
-                    <li></li>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <br><br><br><br>
-        <table id="schedules">
-            <colgroup>
-                <col width="14%">
-                <col width="14%">
-                <col width="14%">
-                <col width="14%">
-                <col width="14%">
-                <col width="14%">
-                <col width="14%">
-            </colgroup>
-            <thead>
-            <tr>
-                <th id="schedule_month" colspan="7"></th>
-            </tr>
-            <tr>
-                <th>Sun(일)</th>
-                <th>Mon(월)</th>
-                <th>The(화)</th>
-                <th>Wed(수)</th>
-                <th>Thu(목)</th>
-                <th>Fri(금)</th>
-                <th>Sat(토)</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-            </tr>
-            <tbody>
-            <tr>
-                <td></td>
-                <td>
-                </td>
-                <td>
-                </td>
-                <td>
-                </td>
-                <td>
-                </td>
-                <td>
-                </td>
-                <td>
-                </td>
-            </tr>
-            <tr>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-            </tr>
-            <tbody>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-                <td class="schedule_date"></td>
-            </tr>
-            <tbody>
-            <tr>
-                <td>
-                    <li>(21:00~)친구들과 놀기!</li>
-                </td>
-                <td>
-                    <li></li>
-                </td>
-                <td>
-                    <li>소고기 사오기!</li>
-                </td>
-                <td>
-                    <li>(19:30~22:30)스파르타코딩클럽 - 수업</li>
-                </td>
-                <td>
-                    <li>밀린 집안일 하기 (빨래,청소)</li>
-                    <li>이마트에서 장 봐오기</li>
-                </td>
-                <td>
-                    <li></li>
-                </td>
-                <td>
-                    <li></li>
-                </td>
-            </tr>
-            </tbody>
-        </table>
     </div>
 </div>
 </body>

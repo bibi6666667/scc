@@ -76,7 +76,7 @@
             float: right;
         }
 
-        #schedule_month {
+        #month {
             font-weight: bold;
             font-size: 30px;
         }
@@ -97,7 +97,7 @@
         function show_month() {
             let today = new Date()
             let month = today.getMonth() + 1;
-            $('#schedule_month').append(month + '월');
+            $('#month').append(month + '월');
         }
 
         function show_date() {
