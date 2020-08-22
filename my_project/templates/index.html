@@ -91,6 +91,7 @@
             show_date()
             show_month()
             show_day()
+            readsche()
         });
 
         function show_month() {
@@ -192,18 +193,27 @@
                     } else {
                         alert('서버 오류!')
                     }
+                    window.location.reload();
                 }
             })
         }
 
         //2. 일정 조회(Read) - /readsche (GET)
         function readsche() {
+            $('#day_layout').empty();
             $.ajax({
                 type: "GET",
                 url: '/readsche',
                 data: {},
                 success: function (response) {
                     let todolist = response['todolist'];
+                    for (i = 0; i < todolist.length; i++) {
+                        let todo = `<div class="schedule">
+                                                <div class="schedule_date">${todolist[i]['start_date']}~${todolist[i]['end_date']}</div>
+                                                <li>(${todolist[i]['start_time']}~${todolist[i]['end_time']})${todolist[i]['todo']}</li>${todolist[i]['memo']}
+                                            </div>`
+                        $('#day_layout').append(todo);
+                    }
                 }
             })
         }
@@ -272,8 +282,8 @@
         <a href="#" onclick="show_30day()"><img class="icon" src="../static/calendar_30.png" alt="30일 레이아웃 아이콘"></a>
     </div>
     <div id="schedules">
+        <div id="month"></div>
         <div id="day_layout">
-            <div id="month"></div>
             <div class="schedule">
                 <div class="schedule_date">15일 (토)</div>
                 <li>스파르타코딩클럽 - 프로젝트 계획 짜기!</li>

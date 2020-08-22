@@ -49,7 +49,7 @@ def make_sche():
 # 2. 일정 조회(Read) - /readsche (GET)
 @app.route('/readsche', methods=['GET'])
 def read_sche():
-    todolist = db.todo.find({},{'_id' : 0});
+    todolist = list(db.todo.find({},{'_id' : 0}));
     return jsonify({'result': 'success', 'todolist': todolist,'msg': '일정을 불러왔습니다. 멍!'})
 
 
