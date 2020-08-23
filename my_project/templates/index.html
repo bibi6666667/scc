@@ -30,6 +30,10 @@
             padding: 10px;
         }
 
+        button {
+            font-weight: bold;
+        }
+
         .icon {
             width: 50px;
             height: 50px;
@@ -157,45 +161,48 @@
         ////////////API 역할을 하는 부분
         //1. 일정 생성(Create) - /makesche (POST)
         function makesche() {
-            let todo = $('#todo').val();
-            let start_date = $('#start_date').val();
-            let start_time = $('#start_time').val();
-            let end_date = $('#end_date').val();
-            let end_time = $('#end_time').val();
-            let startend = $('#startend').val();
-            let alert1_day = $('#alert_1_day').val();
-            let alert1_time = $('#alert_1_time').val();
-            // 알림1-카톡/이메일알림여부
-            let alert2_day = $('#alert_2_day option:selected').val();
-            let alert2_time = $('#alert_2_time').val();
-            // 알림2-카톡/이메일알림여부
-            let memo = $('#memo').val();
-            $.ajax({
-                type: "POST",
-                url: "/makesche",
-                data: {
-                    'todo': todo,
-                    'start_date': start_date,
-                    'start_time': start_time,
-                    'end_date': end_date,
-                    'end_time': end_time,
-                    'startend': startend,
-                    'alert1_day': alert1_day,
-                    'alert1_time': alert1_time,
-                    'alert2_day': alert2_day,
-                    'alert2_time': alert2_time,
-                    'memo': memo
-                },
-                success: function (response) { // 성공하면
-                    if (response["result"] == "success") {
-                        alert(response["msg"]);
-                        // window.location.reload();
-                    } else {
-                        alert('서버 오류!')
+            if ($('#todo').val() == 0 || $('#start_date').val() == 0) {
+                alert("멍! 할 일과 시작일이 있어야 일정을 저장할 수 있어요!")
+            } else {
+                let todo = $('#todo').val();
+                let start_date = $('#start_date').val();
+                let start_time = $('#start_time').val();
+                let end_date = $('#end_date').val();
+                let end_time = $('#end_time').val();
+                let startend = $('#startend').val();
+                let alert1_day = $('#alert_1_day').val();
+                let alert1_time = $('#alert_1_time').val();
+                // 알림1-카톡/이메일알림여부
+                let alert2_day = $('#alert_2_day option:selected').val();
+                let alert2_time = $('#alert_2_time').val();
+                // 알림2-카톡/이메일알림여부
+                let memo = $('#memo').val();
+                $.ajax({
+                    type: "POST",
+                    url: "/makesche",
+                    data: {
+                        'todo': todo,
+                        'start_date': start_date,
+                        'start_time': start_time,
+                        'end_date': end_date,
+                        'end_time': end_time,
+                        'startend': startend,
+                        'alert1_day': alert1_day,
+                        'alert1_time': alert1_time,
+                        'alert2_day': alert2_day,
+                        'alert2_time': alert2_time,
+                        'memo': memo
+                    },
+                    success: function (response) { // 성공하면
+                        if (response["result"] == "success") {
+                            alert(response["msg"]);
+                            window.location.reload();
+                        } else {
+                            alert('서버 오류!')
+                        }
                     }
-                    window.location.reload();
-                }
-            })
+                })
+            }
         }
 
         //2. 일정 조회(Read) - /readsche (GET)
@@ -208,19 +215,84 @@
                 success: function (response) {
                     let todolist = response['todolist'];
                     for (i = 0; i < todolist.length; i++) {
-                        let todo = `<div class="schedule">
-                                                <div class="schedule_date">${todolist[i]['start_date']}~${todolist[i]['end_date']}</div>
-                                                <li>(${todolist[i]['start_time']}~${todolist[i]['end_time']})${todolist[i]['todo']}</li>${todolist[i]['memo']}
+                        let a_todo = todolist[i];
+                        let todo = a_todo['todo']
+                        let start_date = a_todo['start_date']
+                        let end_date = a_todo['end_date']
+                        let start_time = a_todo['start_time']
+                        let end_time = a_todo['end_time']
+                        let memo = a_todo['memo']
+                        let todo_card = `<div class="schedule">
+                                                <div class="schedule_date">${start_date}~${end_date}
+                                                <button onclick="fixsche('${todo}')">편집</button>
+                                                <button onclick="delsche('${todo}')">삭제</button></div>
+                                                <li>(${start_time}~${end_time})${todo}</li>${memo}
                                             </div>`
-                        $('#day_layout').append(todo);
+                        $('#day_layout').append(todo_card);
                     }
                 }
             })
         }
 
-        //3. 일정 검색(Read?) - /findsche (GET)
+        //3. 일정 검색(Read?) - /findsche (POST)
+
+        ///////////////////////여기까지 했음! 얼럿은 뜨는데 검색결과가 append되지않음///////
+        function find_sche(todo) {
+            $('#day_layout').empty();
+            let keyword = $('#search').val();
+            $.ajax({
+                type: "POST",
+                url: "/findsche",
+                data: {'keyword': keyword},
+                success: function (response) {
+                    console.log(response['serched'])
+                    if (response["result"] == "success") {
+                        for (i = 0; i < response.length; i++) {
+                            let serched = response['serched'][i];
+                            let serched_card = `<div class="schedule">
+                                                    <div class="schedule_date">${serched['start_date']}~${serched['end_date']}
+                                                    <button onclick="fixsche('${serched['todo']}')">편집</button>
+                                                    <button onclick="delsche('${serched['todo']}')">삭제</button></div>
+                                                    <li>(${serched['start_time']}~${serched['end_time']})${serched['todo']}</li>${serched['memo']}
+                                                </div>`
+                            $('#day_layout').append(serched_card);
+                        }
+                        alert(response["msg"]);
+                    } else {
+                        alert('서버 오류!')
+                    }
+                }
+            })
+        }
+
         //4. 일정 변경(Update) - /fixsche (POST)
+        function fixsche() {
+            $.ajax({
+                type: "POST",
+                url: "/makesche",
+                data: {},
+                success: function (response) {
+                }
+            })
+        }
+
         //5. 일정 삭제(Delete) - /delsche(POST)
+        function delsche(todo) {
+            $.ajax({
+                type: "POST",
+                url: "/delsche",
+                data: {'todo': todo},
+                success: function (response) {
+                    if (response["result"] == "success") {
+                        alert(response["msg"]);
+                        window.location.reload();
+                    } else {
+                        alert('서버 오류!')
+                    }
+                }
+            })
+        }
+
         //6. 알림 보내기?
         ///////////위의 것들 다 했다면
         //7. 날씨 조회 /wether (GET)
@@ -282,7 +354,9 @@
         <a href="#" onclick="show_30day()"><img class="icon" src="../static/calendar_30.png" alt="30일 레이아웃 아이콘"></a>
     </div>
     <div id="schedules">
-        <div id="month"></div>
+        <div id="month"></div><br>
+        <input id="search" type="text" placeholder="일정을 검색할 수 있어요. 멍!">
+        <button onclick="find_sche()">🔍</button>
         <div id="day_layout">
             <div class="schedule">
                 <div class="schedule_date">15일 (토)</div>

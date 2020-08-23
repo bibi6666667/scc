@@ -49,13 +49,24 @@ def make_sche():
 # 2. 일정 조회(Read) - /readsche (GET)
 @app.route('/readsche', methods=['GET'])
 def read_sche():
-    todolist = list(db.todo.find({},{'_id' : 0}));
+    todolist = list(db.todo.find({},{'_id' : 0}))
     return jsonify({'result': 'success', 'todolist': todolist,'msg': '일정을 불러왔습니다. 멍!'})
 
+# 3. 일정 검색(Read?) - /findsche (POST)
+@app.route('/findsche', methods=['POST'])
+def find_sche():
+    keyword = request.form['keyword']
+    serched = list(db.todo.find({'todo':keyword},{'_id':0}))
+    return jsonify({'result': 'success', 'serched' : serched,'msg': '검색 완료!'})
 
-# 3. 일정 검색(Read?) - /findsche (GET)
 # 4. 일정 변경(Update) - /fixsche (POST)
+
 # 5. 일정 삭제(Delete) - /delsche(POST)
+@app.route('/delsche', methods=['POST'])
+def del_sche():
+    del_todo = request.form['todo']
+    db.todo.delete_one({'todo':del_todo})
+    return jsonify({'result': 'success', 'msg': '선택하신 일정을 삭제했어요!'})
 # 6. 알림 보내기?
 ###위의 것들 다 했다면###
 # 7. 날씨 조회 /wether (GET)
