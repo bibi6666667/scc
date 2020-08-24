@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>test</title>
+    <style>
+        .schedule {
+            margin: 15px;
+            padding: 10px;
+            border: 3px darkgray double;
+        }
+
+        .schedule_date {
+            font-weight: bolder;
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+    <script>
+        function parents() {
+            sche = $('#fixsche').parents("div")
+            td = sche.find('#todo').val()
+            console.log(td);
+        }
+    </script>
+</head>
+<body>
+<button onclick="parents()">클릭</button>
+<input type="text" placeholder="반환값">
+<div class="schedule">
+    <div class="schedule_date"><input type="date" id="start_date" value="2020-08-20">~<input type="date" id="end_date">
+    </div>
+    <button id="fixsche" onclick="fixsche()">편집</button>
+    <input type="submit" value="저장🐾">
+    <button id="delsche" onclick="delsche()">삭제</button>
+    <li>(<input type="time" id="start_time" value="16:30">~<input type="time" id="end_time">)
+        <input type="text" width="500px" id="todo" value="멍멍! 할 일이 뭔가요?"></li>
+    <textarea id="memo" cols="30" rows="5">메모기본값</textarea>
+</div>
+
+    <h3>🐶어떤 일정을 적어둘까요?</h3><br>
+    <input type="text" width="300px" placeholder="멍멍! 할 일이 뭔가요?"><br><br>
+    언제부터 해야 하나요?(시작일)<br>
+    <input type="date" id="start_date"><input type="time" id="start_time"> <br><br>
+    언제까지 해야 하나요?(종료일)<br>
+    <input type="date" id="end_date"><input type="time" id="end_time"><br>
+    종일!(시작일=종료일)<input type="checkbox" id="startend"><br><br>
+    <h3>🐕잊지 않게 알려드릴게요!</h3><br>
+    <select id="alert_1_day">
+        <option value="" selected disabled hidden>언제 알려드릴까요?</option>
+        <option value="on_day" id="">스케줄 당일에 알려줘!</option>
+        <option value="day_ago" id="">1일 전에 알려줘!</option>
+        <option value="3days_ago" id="">3일 전에 알려줘!</option>
+        <option value="week_ago" id="">1주일 전에 알려줘!</option>
+    </select>
+    <input type="time" id="alert_1_time"><br>
+    카카오톡 메시지 알림 <input type="radio" name="alert_how" value="katalk">
+    이메일 알림 <input type="radio" name="alert_how" value="email"><br><br>
+
+    <select id="alert_2_day">
+        <option value="" selected disabled hidden>한 번 더 알려드릴까요?</option>
+        <option value="on_day">스케줄 당일에 알려줘!</option>
+        <option value="day_ago">1일 전에 알려줘!</option>
+        <option value="3days_ago">3일 전에 알려줘!</option>
+        <option value="week_ago">1주일 전에 알려줘!</option>
+    </select>
+    <input type="time" id="alert_2_time"><br>
+    카카오톡 메시지 알림 <input type="radio" name="alert_how" value="katalk">
+    이메일 알림 <input type="radio" name="alert_how" value="email"><br><br>
+    <textarea id="memo" placeholder="메모를 더 남길 수 있어요. 멍!" cols="30" rows="5"></textarea><br><br>
+    <input type="submit" onclick="makesche()" value="저장!🐾">
+
+
+</body>
+</html>

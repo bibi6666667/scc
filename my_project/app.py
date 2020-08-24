@@ -1,5 +1,6 @@
 from pymongo import MongoClient
-
+from bson.json_util import dumps
+from bson.objectid import ObjectId
 from flask import Flask, render_template, jsonify, request
 
 app = Flask(__name__)
@@ -49,17 +50,29 @@ def make_sche():
 # 2. 일정 조회(Read) - /readsche (GET)
 @app.route('/readsche', methods=['GET'])
 def read_sche():
-    todolist = list(db.todo.find({},{'_id' : 0}))
-    return jsonify({'result': 'success', 'todolist': todolist,'msg': '일정을 불러왔습니다. 멍!'})
+    todolist = list(db.todo.find({}))
+    return dumps({'result': 'success', 'todolist': todolist,'msg': '일정을 불러왔습니다. 멍!'})
 
 # 3. 일정 검색(Read?) - /findsche (POST)
 @app.route('/findsche', methods=['POST'])
 def find_sche():
     keyword = request.form['keyword']
-    serched = list(db.todo.find({'todo':keyword},{'_id':0}))
-    return jsonify({'result': 'success', 'serched' : serched,'msg': '검색 완료!'})
+    serched = list(db.todo.find({'todo': keyword}, {'_id': 0}))
+    return jsonify({'result': 'success', 'serched': serched,'msg': '검색 완료!'})
 
-# 4. 일정 변경(Update) - /fixsche (POST)
+# 4-1. 일정 변경을 위한 조회(find-one) - /readasche (GET)
+@app.route('/readasche', methods=['GET'])
+def read_a_sche():
+    fix_id = request.args.get('id')
+    fix_todo = db.todo.find_one({"_id": ObjectId(fix_id)}, {'_id': 0})
+    return jsonify({'result': 'success', 'fix_todo': fix_todo})
+
+# 4-2. 일정 변경(Update) - /fixsche (POST)
+@app.route('/fixsche', methods=['POST'])
+def fix_sche():
+    fix_keyword = request.form['fix_keyword']
+    fix_todo = list(db.todo.find_one({'todo': fix_keyword}, {'_id': 0}))
+    return jsonify({'result': 'success', 'fix_todo': fix_todo})
 
 # 5. 일정 삭제(Delete) - /delsche(POST)
 @app.route('/delsche', methods=['POST'])
@@ -67,7 +80,10 @@ def del_sche():
     del_todo = request.form['todo']
     db.todo.delete_one({'todo':del_todo})
     return jsonify({'result': 'success', 'msg': '선택하신 일정을 삭제했어요!'})
+
 # 6. 알림 보내기?
+# 6-1. 이메일보내기
+# 6-2. 카톡 플친으로 메시지보내기
 ###위의 것들 다 했다면###
 # 7. 날씨 조회 /wether (GET)
 # 8. 회원시스템 개발시작!
