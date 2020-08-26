@@ -48,7 +48,7 @@
             border: solid black;
         }
 
-        .schedule {
+        .sche_card, .fix_card {
             margin: 15px;
             padding: 10px;
             border: 3px darkgray double;
@@ -223,9 +223,9 @@
                         let start_time = a_todo['start_time']
                         let end_time = a_todo['end_time']
                         let memo = a_todo['memo']
-                        let todo_card = `<div class="schedule" data-id="${a_todo['_id']['$oid']}">
+                        let todo_card = `<div class="sche_card" data-id="${a_todo['_id']['$oid']}">
                                             <div class="schedule_date">${start_date}~${end_date}</div>
-                                            <button onclick="fixsche(this)">편집</button>
+                                            <button onclick="readasche(this)">편집</button>
                                             <button onclick="delsche(this)">삭제</button>
                                             <li>(${start_time}~${end_time})${todo}</li>${memo}
                                         </div>`
@@ -236,8 +236,6 @@
         }
 
         //3. 일정 검색(Read?) - /findsche (POST)
-
-        ///////////////////////얼럿은 뜨는데 검색결과가 append되지않음///////
         function find_sche(todo) {
             $('#day_layout').empty();
             let keyword = $('#search').val();
@@ -246,21 +244,17 @@
                 url: "/findsche",
                 data: {'keyword': keyword},
                 success: function (response) {
-                    console.log(response['serched'].length)
                     if (response["result"] == "success") {
-                        console.log(response.length)
-                        let serched_list = response['serched'];
-                        console.log(serched_list.length)
-                        for (i = 0; i < serched_list.length; i++) {
-                            let serched = serched_list[i];
-                            let serched_card = `<div class="schedule">
-                                                    <div class="schedule_date">${serched['start_date']}~${serched['end_date']}</div>
-                                                    <button onclick="fixsche('${serched['todo']}')">편집</button>
-                                                    <button onclick="delsche('${serched['todo']}')">삭제</button>
-                                                    <li>(${serched['start_time']}~${serched['end_time']})${serched['todo']}</li>${serched['memo']}
+                        let searched_list = response['serched'];
+                        for (i = 0; i < searched_list.length; i++) {
+                            let searched = searched_list[i];
+                            let searched_card = `<div class="sche_card">
+                                                    <div class="schedule_date">${searched['start_date']}~${searched['end_date']}</div>
+                                                    <button onclick="readasche(e)">편집</button>
+                                                    <button onclick="delsche('${searched['todo']}')">삭제</button>
+                                                    <li>(${searched['start_time']}~${searched['end_time']})${searched['todo']}</li>${searched['memo']}
                                                </div>`
-                            console.log(serched_card)
-                            $('#day_layout').append(serched_card);
+                            $('#day_layout').append(searched_card);
                         }
                         alert(response["msg"]);
                     } else {
@@ -270,11 +264,11 @@
             })
         }
 
-        //4. 일정 변경(Update) - /fixsche (POST)
+        // 4-1. 일정 변경을 위한 조회(find-one) - /readasche (GET)
         //->새 창을 띄우고 db에서 편집하려고 선택한 일정의 일정명을 가지고 해당 일정을 찾고,
         // 그 일정 data를 불러와 기본값으로 넣고,
         // 편집된 일정을 저장한 뒤todo card 형식으로 append하게 만들면 되겠다.
-        function fixsche(e) {
+        function readasche(e) {
             let sche = $(e).parent();
             let id = sche.attr('data-id');
             console.log(id);
@@ -291,12 +285,12 @@
                         let start_time = fix_todo['start_time']
                         let end_time = fix_todo['end_time']
                         let memo = fix_todo['memo'];
-                        let fix_card = `<div class="schedule">
+                        let fix_card = `<div class="fix_card">
                                                 <div class="schedule_date"><input type="date" id="start_date" value="${start_date}">
                                                 ~<input type="date" id="end_date" value="${end_date}">
                                                 </div>
-                                                <button id="fixsche" onclick="fixsche()">편집</button>
-                                                <input type="submit" value="저장🐾">
+                                                <button id="fixsche" onclick="readasche(e)">편집</button>
+                                                <button id="" onclick="fixsche()">저장🐾</button>
                                                 <button id="delsche" onclick="delsche()">삭제</button>
                                                 <li>(<input type="time" id="start_time" value="${start_time}">
                                                     ~<input type="time" id="end_time" value="${end_time}">)
@@ -315,6 +309,20 @@
 
                 }
             })
+            //4-2함수 호출 ?
+        }
+
+        // 4-2. 일정 변경(Update) - /fixsche (POST)
+        function fixsche() {
+            let fix_card =
+                $.ajax({
+                    type: "POST",
+                    url: "/fixsche",
+                    data: { /* 일정명, 시작일, 종료일, 메모..*/ },
+                    success: function (response) {
+                    }
+                })
+
         }
 
         //5. 일정 삭제(Delete) - /delsche(POST)
@@ -336,7 +344,7 @@
 
         //6. 알림 보내기?
         ///////////위의 것들 다 했다면
-        //7. 날씨 조회 /wether (GET)
+        //7. 날씨 조회 /weather (GET)
         //8. 회원시스템 시작
 
     </script>
@@ -399,35 +407,35 @@
         <input id="search" type="text" placeholder="일정을 검색할 수 있어요. 멍!">
         <button onclick="find_sche()">🔍</button>
         <div id="day_layout">
-            <div class="schedule">
+            <div class="sche_card">
                 <div class="schedule_date">15일~15일</div>
-                <button onclick="fixsche()">편집</button>
+                <button onclick="readasche()">편집</button>
                 <button onclick="delsche()">삭제</button>
                 <li>(14:00~16:00) 프로젝트 계획 짜기!</li>
                 ${serched['memo']}
             </div>
-            <div class="schedule">
+            <div class="sche_card">
                 <div class="schedule_date">15일 (토)</div>
                 <li>스파르타코딩클럽 - 프로젝트 계획 짜기!</li>
             </div>
-            <div class="schedule">
+            <div class="sche_card">
                 <div class="schedule_date">16일 (일)</div>
                 <li>(21:00~)친구들과 놀기!</li>
             </div>
-            <div class="schedule">
+            <div class="sche_card">
                 <div class="schedule_date">18일 (화)</div>
                 <li>소고기 사오기!</li>
             </div>
-            <div class="schedule">
+            <div class="sche_card">
                 <div class="schedule_date">19일 (수)</div>
                 <li>(19:30~22:30)스파르타코딩클럽 - 수업</li>
             </div>
-            <div class="schedule">
+            <div class="sche_card">
                 <div class="schedule_date">20일 (목)</div>
                 <li>밀린 집안일 하기 (빨래,청소)</li>
                 <li>이마트에서 장 봐오기</li>
             </div>
-            <div class="schedule">
+            <div class="sche_card">
                 <div class="schedule_date">31일 (월)</div>
                 <li>공포의 31데이..</li>
             </div>

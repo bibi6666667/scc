@@ -57,8 +57,8 @@ def read_sche():
 @app.route('/findsche', methods=['POST'])
 def find_sche():
     keyword = request.form['keyword']
-    serched = list(db.todo.find({'todo': keyword}, {'_id': 0}))
-    return jsonify({'result': 'success', 'serched': serched,'msg': '검색 완료!'})
+    searched = list(db.todo.find({'todo': keyword}, {'_id': 0}))
+    return jsonify({'result': 'success', 'searched': searched,'msg': '검색 완료!'})
 
 # 4-1. 일정 변경을 위한 조회(find-one) - /readasche (GET)
 @app.route('/readasche', methods=['GET'])
