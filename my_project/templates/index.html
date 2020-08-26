@@ -269,60 +269,88 @@
         // 그 일정 data를 불러와 기본값으로 넣고,
         // 편집된 일정을 저장한 뒤todo card 형식으로 append하게 만들면 되겠다.
         function readasche(e) {
-            let sche = $(e).parent();
-            let id = sche.attr('data-id');
+            let sche_card = $(e).parent();
+            let id = sche_card.attr('data-id');
             console.log(id);
             $.ajax({
                 type: "GET",
                 url: "/readasche",
                 data: {'id': id},
                 success: function (response) {
+                    response = JSON.parse(response)
                     if (response["result"] == "success") {
                         let fix_todo = response["fix_todo"];
+                        let id_fix = fix_todo['_id']['$oid']
                         let todo = fix_todo['todo']
                         let start_date = fix_todo['start_date']
                         let end_date = fix_todo['end_date']
                         let start_time = fix_todo['start_time']
                         let end_time = fix_todo['end_time']
                         let memo = fix_todo['memo'];
-                        let fix_card = `<div class="fix_card">
-                                                <div class="schedule_date"><input type="date" id="start_date" value="${start_date}">
-                                                ~<input type="date" id="end_date" value="${end_date}">
-                                                </div>
-                                                <button id="fixsche" onclick="readasche(e)">편집</button>
-                                                <button id="" onclick="fixsche()">저장🐾</button>
-                                                <button id="delsche" onclick="delsche()">삭제</button>
-                                                <li>(<input type="time" id="start_time" value="${start_time}">
-                                                    ~<input type="time" id="end_time" value="${end_time}">)
-                                                    <input type="text" width="500px" id="todo" value="${todo}"></li>
-                                                <textarea id="memo" cols="30" rows="5">${memo}</textarea>
-                                            </div>`
-                        // 수정된게 없으면 얼럿, 있으면 그 데이터 db로 보냄
+                        let fix_card = `<div class="fix_card" data-id="${id_fix}">
+                                            <div class="schedule_date"><input type="date" id="start_date_fix" value="${start_date}">
+                                            ~<input type="date" id="end_date_fix" value="${end_date}">
+                                            </div>
+                                            <button id="readasche" onclick="readasche(this)">편집</button>
+                                            <button id="fixsche" onclick="fixsche(this)">저장🐾</button>
+                                            <button id="delsche" onclick="delsche(this)">삭제</button>
+                                            <li>(<input type="time" id="start_time_fix" value="${start_time}">
+                                                ~<input type="time" id="end_time_fix" value="${end_time}">)
+                                                <input type="text" id="todo_fix" width="500px"  value="${todo}"></li>
+                                            <textarea id="memo_fix" cols="30" rows="5">${memo}</textarea>
+                                        </div>`
                         $('#day_layout').empty();
                         $('#day_layout').append(fix_card);
-                        {# if (fix_card==이전 값) {
-                            alert('수정된 내용이 없습니다!')
-                        } else {
-                            db에 수정된 데이터 보내기 (일정생성API처럼)
-                        } #}
                     }
 
                 }
             })
-            //4-2함수 호출 ?
         }
 
         // 4-2. 일정 변경(Update) - /fixsche (POST)
-        function fixsche() {
-            let fix_card =
-                $.ajax({
-                    type: "POST",
-                    url: "/fixsche",
-                    data: { /* 일정명, 시작일, 종료일, 메모..*/ },
-                    success: function (response) {
+        function fixsche(e) {
+            let fix_card = $(e).parent();
+            let id = fix_card.attr('data-id');
+            console.log(id);
+            // 이 부분은 1.일정생성이 아닌 4-1.일정편집input 이라서 id값을 주지 않고 있다! 4-1에서 id값을 주어야.
+            let todo = $('#todo_fix').val();
+            let start_date = $('#start_date_fix').val();
+            let start_time = $('#start_time_fix').val();
+            let end_date = $('#end_date_fix').val();
+            let end_time = $('#end_time_fix').val();
+            let memo = $('#memo_fix').val();
+            //let startend = $('#startend_fix').val();
+            //let alert1_day = $('#alert_1_day_fix').val();
+            //let alert1_time = $('#alert_1_time_fix').val();
+            // +알림1-카톡/이메일알림여부
+            //let alert2_day = $('#alert_2_day_fix option:selected').val();
+            //let alert2_time = $('#alert_2_time_fix').val();
+            // +알림2-카톡/이메일알림여부
+            $.ajax({
+                type: "POST",
+                url: "/fixsche",
+                data: {
+                    'id' : id,
+                    'todo': todo,
+                    'start_date': start_date,
+                    'start_time': start_time,
+                    'end_date': end_date,
+                    'end_time': end_time,
+                    'memo': memo
+                    /*'alert1_day': alert1_day,
+                    'alert1_time': alert1_time,
+                    'alert2_day': alert2_day,
+                    'alert2_time': alert2_time,*/
+                },
+                success: function (response) { // 성공하면
+                    if (response["result"] == "success") {
+                        alert(response["msg"]);
+                        window.location.reload();
+                    } else {
+                        alert('서버 오류!')
                     }
-                })
-
+                }
+            })
         }
 
         //5. 일정 삭제(Delete) - /delsche(POST)
@@ -351,7 +379,6 @@
 </head>
 <body>
 <div class="wrap">
-
     <div id="title">
         <img id="doggo_icon" class="icon" src="../static/Doggo_icon.png" alt="아이콘 이미지">
         <h1>멍이와 나</h1>
@@ -408,11 +435,10 @@
         <button onclick="find_sche()">🔍</button>
         <div id="day_layout">
             <div class="sche_card">
-                <div class="schedule_date">15일~15일</div>
+                <div class="schedule_date">시작일~종료일</div>
                 <button onclick="readasche()">편집</button>
                 <button onclick="delsche()">삭제</button>
-                <li>(14:00~16:00) 프로젝트 계획 짜기!</li>
-                ${serched['memo']}
+                <li>(시작시간~종료시간) 일정명</li>메모
             </div>
             <div class="sche_card">
                 <div class="schedule_date">15일 (토)</div>
