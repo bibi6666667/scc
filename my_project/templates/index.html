@@ -1,12 +1,24 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+
     <title>멍이와 나🐶</title>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!--Google Web Font-->
     <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!--JS-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
 
     <style>
         * {
@@ -15,8 +27,7 @@
 
         h1 {
             font-family: 'Gamja Flower', cursive;
-            display: inline;
-            font-size: 50px;
+            /*display: inline;*/
         }
 
         table {
@@ -28,10 +39,6 @@
         th, td {
             border: 1px solid darkgray;
             padding: 10px;
-        }
-
-        button {
-            font-weight: bold;
         }
 
         .icon {
@@ -60,7 +67,7 @@
             text-align: left;
         }
 
-        #title {
+        #header {
             margin: 30px;
         }
 
@@ -68,12 +75,6 @@
             border: dashed black 1px;
             padding: 15px;
             margin: 10px;
-        }
-
-        #doggo_icon {
-            width: 70px;
-            height: 70px;
-            float: left;
         }
 
         #user_icon {
@@ -85,18 +86,61 @@
             font-size: 30px;
         }
 
-        /*#input_schedule {
+        #input_schedule {
             display: none;
-        } */
+        }
 
     </style>
     <script>
+        //////로그인 전 단계- guest_info////
         $(document).ready(function () {
+            if ($.cookie('mytoken') == undefined) {
+                // mytoken이라는 값으로 쿠키가 없으면, 홈페이지 레이아웃 대신 guest_info를 보여줍니다
+                $('#header').hide()
+                $('#schedules').hide()
+                $('#guest_info').show()
+                /*alert('로그인을 해주세요')
+                window.location.href = '/login'*/
+            } else {
+                // 쿠기가 있으면, 유저 정보를 불러옵니다.
+                $('#guest_info').hide()
+                load_user_info()
+            }
             show_date()
             show_month()
             show_day()
             readsche()
         });
+
+        ///////로그인영역///////
+        // 쿠키에 가지고 있는 token을 헤더에 담아서 보냅니다.
+        function load_user_info() {
+            $.ajax({
+                type: "GET",
+                url: "/api/nick",
+                headers: {'token_give': $.cookie('mytoken')},
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        // 올바른 결과값을 받으면 nickname을 입력해줍니다.
+                        $('#id').text(response['id'])
+                        $('#nickname').text(response['nickname'])
+                    } else {
+                        // 에러가 나면 메시지를 띄우고 로그인 창으로 이동합니다.
+                        alert(response['msg'])
+                        window.location.href = '/login'
+                    }
+                }
+            })
+        }
+
+        //////로그아웃 영역//////
+        // 로그아웃은 내가 가지고 있는 토큰만 쿠키에서 없애면 됩니다.
+        function logout() {
+            $.removeCookie('mytoken');
+            alert('멍! 로그아웃 되었습니다!🐶')
+            window.location.href = '/'
+        }
 
         function show_month() {
             let today = new Date()
@@ -265,9 +309,6 @@
         }
 
         // 4-1. 일정 변경을 위한 조회(find-one) - /readasche (GET)
-        //->새 창을 띄우고 db에서 편집하려고 선택한 일정의 일정명을 가지고 해당 일정을 찾고,
-        // 그 일정 data를 불러와 기본값으로 넣고,
-        // 편집된 일정을 저장한 뒤todo card 형식으로 append하게 만들면 되겠다.
         function readasche(e) {
             let sche_card = $(e).parent();
             let id = sche_card.attr('data-id');
@@ -330,7 +371,7 @@
                 type: "POST",
                 url: "/fixsche",
                 data: {
-                    'id' : id,
+                    'id': id,
                     'todo': todo,
                     'start_date': start_date,
                     'start_time': start_time,
@@ -379,17 +420,30 @@
 </head>
 <body>
 <div class="wrap">
-    <div id="title">
-        <img id="doggo_icon" class="icon" src="../static/Doggo_icon.png" alt="아이콘 이미지">
+    <div id="doggo&me">
+        <img src="../static/Doggo_icon.png" width="200px" alt="멍이와 나 로고">
         <h1>멍이와 나</h1>
-        <img id="user_icon" class="icon" src="../static/user_icon.png" alt="아이콘 이미지">
-        <br><br><br>
+    </div>
+    <div id="guest_info">
+        🐶 안녕하세요!<br>
+        '멍이와 나'는 일정을 기록하고 알림을 받을 수 있는 서비스에요.<br>
+        지금
+        <button><a href="/login">🐕로그인</a></button>
+        또는
+        <button><a href="/register">🐩회원가입</a></button>
+        해 보시고 '멍이와 나'를 사용해 보세요!<br>
+    </div>
+    <div id="header">
         <div id="title_footer">
+            🐶 <span id="nickname"></span>(<span id="id"></span>)님, 반가워요!<br>
             오늘은 <span id="date"></span>, <span id="day"></span>이에요.<br>
-            오늘은 비가 오니 우산을 꼭 챙겨 다녀요. 멍멍!🐶
+            오늘은 비가 오니 우산을 꼭 챙겨가세요. 멍멍!
         </div>
+        <br>
+        <button onclick="logout()">로그아웃!👋</button>
+        <br><br>
         <button onclick="open_close()" id="btn-new-sche" type="button">일정을 적어주세요📝
-        </button>
+        </button><br>
         <div id="input_schedule">
             <h3>🐶어떤 일정을 적어둘까요?</h3><br>
             <input type="text" width="300px" id="todo" placeholder="멍멍! 할 일이 뭔가요?"><br><br>
@@ -422,11 +476,12 @@
             이메일 알림 <input type="radio" name="alert_how" value="email"><br><br>
             <textarea id="memo" placeholder="메모를 더 남길 수 있어요. 멍!" cols="30" rows="5"></textarea><br><br>
             <input type="submit" onclick="makesche()" value="저장!🐾">
+        </div><br>
+        <div id="layout_buttons">
+            <a href="#" onclick="show_1day()"><img class="icon" src="../static/calendar_1.png" alt="1일 레이아웃 아이콘"></a>
+            <a href="#" onclick="show_7day()"><img class="icon" src="../static/calendar_7.png" alt="7일 레이아웃 아이콘"></a>
+            <a href="#" onclick="show_30day()"><img class="icon" src="../static/calendar_30.png" alt="30일 레이아웃 아이콘"></a>
         </div>
-        <br>
-        <a href="#" onclick="show_1day()"><img class="icon" src="../static/calendar_1.png" alt="1일 레이아웃 아이콘"></a>
-        <a href="#" onclick="show_7day()"><img class="icon" src="../static/calendar_7.png" alt="7일 레이아웃 아이콘"></a>
-        <a href="#" onclick="show_30day()"><img class="icon" src="../static/calendar_30.png" alt="30일 레이아웃 아이콘"></a>
     </div>
     <div id="schedules">
         <div id="month"></div>
@@ -438,7 +493,8 @@
                 <div class="schedule_date">시작일~종료일</div>
                 <button onclick="readasche()">편집</button>
                 <button onclick="delsche()">삭제</button>
-                <li>(시작시간~종료시간) 일정명</li>메모
+                <li>(시작시간~종료시간) 일정명</li>
+                메모
             </div>
             <div class="sche_card">
                 <div class="schedule_date">15일 (토)</div>

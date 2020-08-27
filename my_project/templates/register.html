@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <!-- Webpage Title -->
+    <title>'멍이와 나' 회원가입 페이지</title>
+
+    <!--Google Web Font-->
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet">
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+    <style>
+        h1, h3 {
+            font-family: 'Gamja Flower', cursive;
+            /*display: inline;*/
+        }
+
+        .register_area {
+            text-align: center;
+            /*border: black;*/
+        }
+
+        .info {
+            font-size: 15px;
+        }
+    </style>
+    <script>
+        // 간단한 회원가입 함수입니다.
+        // 아이디, 비밀번호, 닉네임을 받아 DB에 저장합니다.
+        function email_check() {
+            let id_val = $('#userid').val();
+            if (id_val.includes('@' && '.')){
+                register()
+            } else {
+                alert("아이디는 이메일 형식으로 입력해 주세요!")
+            }
+        }
+
+        function dplct_check() {
+
+        }
+
+        function register() {
+            if ($('#userid').val() == 0 || $('#userpw').val() == 0 || $('#usernick').val() == 0) {
+                alert("아이디(이메일), 비밀번호, 닉네임을 모두 입력해 주세요!")
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "/api/register",
+                    data: {
+                        id_give: $('#userid').val(),
+                        pw_give: $('#userpw').val(),
+                        nickname_give: $('#usernick').val()
+                    },
+                    success: function (response) {
+                        if (response['result'] == 'success') {
+                            alert('회원가입이 완료되었습니다. 이제 로그인을 해 주세요!')
+                            window.location.href = '/login'
+                        } else {
+                            alert(response['msg'])
+                        }
+                    }
+                })
+            }
+        }
+    </script>
+</head>
+
+<body>
+<div class="register_area">
+    <img src="../static/Doggo_icon.png" width="200px" alt="멍이와 나 로고">
+    <h1>멍이와 나</h1>
+    <h3>- 회원가입 페이지 -</h3><br>
+    <div class="ID_area">
+        <label for="userid">아이디(id : email)</label><br>
+        <input type="email" id="userid" aria-describedby="emailHelp"
+               placeholder="아이디(이메일 형식)를 입력해 주세요."><br>
+        <button onclick="dplct_check()">아이디 중복검사🔍</button>
+        <p class="info">🐶자주 사용하는 이메일 주소를 아이디로 입력해 주세요.</p>
+        <p class="info">아이디로 입력한 이메일은 일정 알림을 받을 때도 활용됩니다!</p>
+    </div>
+    <br>
+    <div class="PW_area">
+        <label for="userpw">비밀번호(pw)</label><br>
+        <input type="password" id="userpw" placeholder="비밀번호를 입력해 주세요.">
+    </div>
+    <br>
+    <div class="NICK_area">
+        <label for="userpw">닉네임</label><br>
+        <input type="text" class="form-control" id="usernick" placeholder="닉네임을 입력해 주세요.">
+    </div>
+    <br>
+    <button onclick="email_check()" style="font-weight: bold">🐩회원가입 완료!</button>
+</div>
+</body>
+</html>
