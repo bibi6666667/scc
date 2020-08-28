@@ -71,7 +71,7 @@
             margin: 30px;
         }
 
-        #title_footer, #input_schedule {
+        #header_info, #input_schedule {
             border: dashed black 1px;
             padding: 15px;
             margin: 10px;
@@ -123,7 +123,7 @@
                 success: function (response) {
                     if (response['result'] == 'success') {
                         // 올바른 결과값을 받으면 nickname을 입력해줍니다.
-                        $('#id').text(response['id'])
+                        $('#userID').text(response['id'])
                         $('#nickname').text(response['nickname'])
                     } else {
                         // 에러가 나면 메시지를 띄우고 로그인 창으로 이동합니다.
@@ -208,6 +208,7 @@
             if ($('#todo').val() == 0 || $('#start_date').val() == 0) {
                 alert("멍! 할 일과 시작일이 있어야 일정을 저장할 수 있어요!")
             } else {
+                let userID = $('#userID').text();
                 let todo = $('#todo').val();
                 let start_date = $('#start_date').val();
                 let start_time = $('#start_time').val();
@@ -225,6 +226,7 @@
                     type: "POST",
                     url: "/makesche",
                     data: {
+                        'userID' : userID,
                         'todo': todo,
                         'start_date': start_date,
                         'start_time': start_time,
@@ -249,13 +251,14 @@
             }
         }
 
-        //2. 일정 조회(Read) - /readsche (GET)
+        //2. 일정 조회(Read) - /readsche (POST)
         function readsche() {
             $('#day_layout').empty();
+            let userID = $('#userID').text();
             $.ajax({
-                type: "GET",
+                type: "POST",
                 url: '/readsche',
-                data: {},
+                data: {'userID' : userID},
                 success: function (response) {
                     response = JSON.parse(response)
                     let todolist = response['todolist'];
@@ -270,7 +273,7 @@
                         let todo_card = `<div class="sche_card" data-id="${a_todo['_id']['$oid']}">
                                             <div class="schedule_date">${start_date}~${end_date}</div>
                                             <button onclick="readasche(this)">편집</button>
-                                            <button onclick="delsche(this)">삭제</button>
+                                            <button onclick="delsche('${searched['todo']}')">삭제</button>
                                             <li>(${start_time}~${end_time})${todo}</li>${memo}
                                         </div>`
                         $('#day_layout').append(todo_card);
@@ -411,10 +414,9 @@
             })
         }
 
-        //6. 알림 보내기?
+        //6. 알림 보내기(카톡/이메일)
         ///////////위의 것들 다 했다면
         //7. 날씨 조회 /weather (GET)
-        //8. 회원시스템 시작
 
     </script>
 </head>
@@ -434,8 +436,8 @@
         해 보시고 '멍이와 나'를 사용해 보세요!<br>
     </div>
     <div id="header">
-        <div id="title_footer">
-            🐶 <span id="nickname"></span>(<span id="id"></span>)님, 반가워요!<br>
+        <div id="header_info">
+            🐶 <span id="nickname"></span>(<span id="userID"></span>)님, 반가워요!<br>
             오늘은 <span id="date"></span>, <span id="day"></span>이에요.<br>
             오늘은 비가 오니 우산을 꼭 챙겨가세요. 멍멍!
         </div>
