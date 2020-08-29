@@ -56,6 +56,9 @@
                             // 이 토큰을 mytoken이라는 키 값으로 쿠키에 저장합니다.
                             $.cookie('mytoken', response['token']);
 
+                            // token_give를 쿠키에 저장합니다.
+                            $.cookie('token_give', response['token']);
+
                             alert('🐕로그인 되었습니다!')
                             window.location.href = '/'
                         } else {

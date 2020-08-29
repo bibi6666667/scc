@@ -127,7 +127,13 @@ def api_valid():
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        token_receive = request.headers.get("token_give")
+        # 아래 코드는 header에서 token_give 값을 가져오는 이전 코드입니다.
+        # token_receive = request.headers.get("token_give")
+
+        # client에 저장된 쿠키는 해당 클라이언트에서 서버로 보낼 때 항상 함께 보내도록 구현되어있어서
+        # 모든 요청마다 클라이언트에서 쿠키값을 넣어주지 않아도 자동으로 동봉되어 서버로 전달됩니다.
+        # 쿠키값을 꺼내는 방법은 아래와 같습니다.
+        token_receive = request.cookies.get('token_give')
         print(token_receive)
         if token_receive is not None:
             try:
@@ -153,7 +159,6 @@ def login_required(f):
 @login_required #데코레이터
 def make_sche():
     userID = g.user_id
-    print(userID)
     todo = request.form['todo']
     start_date = request.form['start_date']
     start_time = request.form['start_time']
