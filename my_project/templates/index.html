@@ -208,7 +208,7 @@
             if ($('#todo').val() == 0 || $('#start_date').val() == 0) {
                 alert("멍! 할 일과 시작일이 있어야 일정을 저장할 수 있어요!")
             } else {
-                let userID = $('#userID').text();
+                //let userID = $('#userID').text();
                 let todo = $('#todo').val();
                 let start_date = $('#start_date').val();
                 let start_time = $('#start_time').val();
@@ -226,7 +226,7 @@
                     type: "POST",
                     url: "/makesche",
                     data: {
-                        'userID' : userID,
+                        //'userID' : userID,
                         'todo': todo,
                         'start_date': start_date,
                         'start_time': start_time,
@@ -273,7 +273,7 @@
                         let todo_card = `<div class="sche_card" data-id="${a_todo['_id']['$oid']}">
                                             <div class="schedule_date">${start_date}~${end_date}</div>
                                             <button onclick="readasche(this)">편집</button>
-                                            <button onclick="delsche('${searched['todo']}')">삭제</button>
+                                            <button onclick="delsche('${todo}')">삭제</button>
                                             <li>(${start_time}~${end_time})${todo}</li>${memo}
                                         </div>`
                         $('#day_layout').append(todo_card);

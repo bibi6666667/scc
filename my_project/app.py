@@ -128,6 +128,7 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         token_receive = request.headers.get("token_give")
+        print(token_receive)
         if token_receive is not None:
             try:
                 payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -149,8 +150,10 @@ def login_required(f):
 #####################
 # 1. 일정 생성(Create) - /makesche (POST)
 @app.route('/makesche', methods=['POST'])
+@login_required #데코레이터
 def make_sche():
-    userID = request.form['userID']
+    userID = g.user_id
+    print(userID)
     todo = request.form['todo']
     start_date = request.form['start_date']
     start_time = request.form['start_time']
