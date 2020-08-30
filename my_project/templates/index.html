@@ -138,7 +138,7 @@
         // 로그아웃은 내가 가지고 있는 토큰만 쿠키에서 없애면 됩니다.
         function logout() {
             $.removeCookie('mytoken');
-            alert('멍! 로그아웃 되었습니다!🐶')
+            alert('로그아웃 되었습니다! 또 찾아와 주세요🐶')
             window.location.href = '/'
         }
 
@@ -258,7 +258,7 @@
             $.ajax({
                 type: "POST",
                 url: '/readsche',
-                data: {'userID' : userID},
+                data: {'userID': userID},
                 success: function (response) {
                     response = JSON.parse(response)
                     let todolist = response['todolist'];
@@ -273,7 +273,7 @@
                         let todo_card = `<div class="sche_card" data-id="${a_todo['_id']['$oid']}">
                                             <div class="schedule_date">${start_date}~${end_date}</div>
                                             <button onclick="readasche(this)">편집</button>
-                                            <button onclick="delsche('${todo}')">삭제</button>
+                                            <button onclick="delsche(this)">삭제</button>
                                             <li>(${start_time}~${end_time})${todo}</li>${memo}
                                         </div>`
                         $('#day_layout').append(todo_card);
@@ -292,18 +292,23 @@
                 data: {'keyword': keyword},
                 success: function (response) {
                     if (response["result"] == "success") {
-                        let searched_list = response['serched'];
-                        for (i = 0; i < searched_list.length; i++) {
-                            let searched = searched_list[i];
-                            let searched_card = `<div class="sche_card">
+                        let searched_list = response['searched'];
+                        console.log(searched_list)
+                        if (searched_list.length == 0) {
+                            alert("🐶 검색결과가 없습니다!")
+                        } else {
+                            for (i = 0; i < searched_list.length; i++) {
+                                let searched = searched_list[i];
+                                let searched_card = `<div class="sche_card">
                                                     <div class="schedule_date">${searched['start_date']}~${searched['end_date']}</div>
                                                     <button onclick="readasche(e)">편집</button>
                                                     <button onclick="delsche('${searched['todo']}')">삭제</button>
                                                     <li>(${searched['start_time']}~${searched['end_time']})${searched['todo']}</li>${searched['memo']}
                                                </div>`
-                            $('#day_layout').append(searched_card);
+                                $('#day_layout').append(searched_card);
+                            }
+                            alert(response["msg"]);
                         }
-                        alert(response["msg"]);
                     } else {
                         alert('서버 오류!')
                     }
@@ -398,12 +403,15 @@
         }
 
         //5. 일정 삭제(Delete) - /delsche(POST)
-        function delsche(todo) {
+        function delsche(e) {
+            let sche_card = $(e).parent();
+            let id = sche_card.attr('data-id');
             $.ajax({
                 type: "POST",
                 url: "/delsche",
-                data: {'todo': todo},
+                data: {'id': id},
                 success: function (response) {
+                    response = JSON.parse(response)
                     if (response["result"] == "success") {
                         alert(response["msg"]);
                         window.location.reload();
@@ -445,7 +453,8 @@
         <button onclick="logout()">로그아웃!👋</button>
         <br><br>
         <button onclick="open_close()" id="btn-new-sche" type="button">일정을 적어주세요📝
-        </button><br>
+        </button>
+        <br>
         <div id="input_schedule">
             <h3>🐶어떤 일정을 적어둘까요?</h3><br>
             <input type="text" width="300px" id="todo" placeholder="멍멍! 할 일이 뭔가요?"><br><br>
@@ -478,7 +487,8 @@
             이메일 알림 <input type="radio" name="alert_how" value="email"><br><br>
             <textarea id="memo" placeholder="메모를 더 남길 수 있어요. 멍!" cols="30" rows="5"></textarea><br><br>
             <input type="submit" onclick="makesche()" value="저장!🐾">
-        </div><br>
+        </div>
+        <br>
         <div id="layout_buttons">
             <a href="#" onclick="show_1day()"><img class="icon" src="../static/calendar_1.png" alt="1일 레이아웃 아이콘"></a>
             <a href="#" onclick="show_7day()"><img class="icon" src="../static/calendar_7.png" alt="7일 레이아웃 아이콘"></a>

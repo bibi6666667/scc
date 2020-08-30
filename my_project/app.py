@@ -134,7 +134,7 @@ def login_required(f):
         # 모든 요청마다 클라이언트에서 쿠키값을 넣어주지 않아도 자동으로 동봉되어 서버로 전달됩니다.
         # 쿠키값을 꺼내는 방법은 아래와 같습니다.
         token_receive = request.cookies.get('token_give')
-        print(token_receive)
+        #print(token_receive)
         if token_receive is not None:
             try:
                 payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -190,18 +190,20 @@ def make_sche():
 
 # 2. 일정 조회(Read) - /readsche (POST)
 @app.route('/readsche', methods=['POST'])
+@login_required #데코레이터
 def read_sche():
-    userid = request.form['userID']
-    print(userid)
-    todolist = list(db.todo.find({'userID': userid}))
+    userID = g.user_id
+    todolist = list(db.todo.find({'userID': userID}))
     return dumps({'result': 'success', 'todolist': todolist, 'msg': '일정을 불러왔습니다. 멍!'})
 
 
 # 3. 일정 검색(Read?) - /findsche (POST)
 @app.route('/findsche', methods=['POST'])
+@login_required #데코레이터
 def find_sche():
+    userID = g.user_id
     keyword = request.form['keyword']
-    searched = list(db.todo.find({'todo': keyword}, {'_id': 0}))
+    searched = list(db.todo.find({'todo': keyword, 'userID': userID}, {'_id': 0}))
     return jsonify({'result': 'success', 'searched': searched, 'msg': '검색 완료!'})
 
 
@@ -215,7 +217,9 @@ def read_a_sche():
 
 # 4-2. 일정 변경(Update) - /fixsche (POST)
 @app.route('/fixsche', methods=['POST'])
+@login_required #데코레이터
 def fix_sche():
+    userID = g.user_id
     id = request.form['id']
     todo = request.form['todo']
     start_date = request.form['start_date']
@@ -223,7 +227,6 @@ def fix_sche():
     end_date = request.form['end_date']
     end_time = request.form['end_time']
     memo = request.form['memo']
-    print(memo)
     # startend = request.form['startend_fix']
     # alert1_day = request.form['alert1_day_fix']
     # alert1_time = request.form['alert1_time_fix']
@@ -239,18 +242,18 @@ def fix_sche():
     }})
     return jsonify({'result': 'success', 'msg': '수정된 스케줄을 저장했습니다. 멍!'})
 
-
 # 5. 일정 삭제(Delete) - /delsche(POST)
 @app.route('/delsche', methods=['POST'])
 def del_sche():
-    del_todo = request.form['todo']
-    db.todo.delete_one({'todo': del_todo})
-    return jsonify({'result': 'success', 'msg': '선택하신 일정을 삭제했어요!'})
+    del_id = request.form['id']
+    print(del_id)
+    db.todo.delete_one({"_id": ObjectId(del_id)})
+    return dumps({'result': 'success', 'msg': '선택하신 일정이 삭제되었습니다. 멍!'})
 
 
 # 6. 알림 보내기?
 # 6-1. 이메일보내기
-# 6-2. 카톡 플친으로 메시지보내기
+# 6-2. 카톡 메시지보내기
 ###위의 것들 다 했다면###
 # 7. 날씨 조회 /weather (GET)
 
