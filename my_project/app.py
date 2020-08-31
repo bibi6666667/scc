@@ -252,9 +252,63 @@ def del_sche():
 
 
 # 6. 알림 보내기?
-# 6-1. 이메일보내기
-# 6-2. 카톡 메시지보내기
-###위의 것들 다 했다면###
+# 6-1. 이메일전송함수
+def send_email():
+    import smtplib
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text import MIMEText
+
+    me = "doggo_and_me@daum.net"
+    my_password = "zkaltkak12doggo"
+    you = "non_named@naver.com"
+
+    ## 여기서부터 코드를 작성하세요.
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "Alert"
+    msg['From'] = me
+    msg['To'] = you
+
+    html = '<html><body><p>Hi, I have the following alerts for you!</p></body></html>'
+    part2 = MIMEText(html, 'html')
+
+    msg.attach(part2)
+    ## 여기에서 코드 작성이 끝납니다.
+
+    # Gmail 관련 필요한 정보를 획득합니다.
+    s = smtplib.SMTP_SSL('smtp.gmail.com',465)
+    # Gmail에 로그인합니다.
+    s.login(me, my_password)
+    # 메일을 전송합니다.
+    s.sendmail(me, you, msg.as_string())
+    # 프로그램을 종료합니다.
+    s.quit()
+
+# 6-2. 카톡 메시지전송 함수
+# 6-3. 스케줄 함수
+
+import schedule
+import time
+import datetime
+from pprint import pprint
+
+def job():
+    print("일하고 있어용")
+    # 조건문
+    # 이메일알림에 체크되어 있으면 -> 6-1 실행
+    # 카톡알림에 체크되어있으면 -> 6-2 실행
+    # 둘 다 체크되어 있지 않으면 -> 종료.
+
+# 1분에 한번씩 실행
+schedule.every(60).seconds.do(job)
+#현재시간과 비교
+now = datetime.datetime.now()
+print(now)
+#job확인
+pprint(schedule.jobs)
+#job실행-예약일정에 상관없이 모든 job이 1회 실행
+schedule.run_all()
+
+
 # 7. 날씨 조회 /weather (GET)
 
 if __name__ == '__main__':
