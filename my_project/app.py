@@ -164,9 +164,13 @@ def make_sche():
     start_time = request.form['start_time']
     end_date = request.form['end_date']
     end_time = request.form['end_time']
-    startend = request.form['startend']
+    start_end = request.form['start_end']
+    alert1_katalk = request.form['alert1_katalk']
+    alert1_email = request.form['alert1_email']
     alert1_day = request.form['alert1_day']
     alert1_time = request.form['alert1_time']
+    alert2_katalk = request.form['alert2_katalk']
+    alert2_email = request.form['alert2_email']
     alert2_day = request.form['alert2_day']
     alert2_time = request.form['alert2_time']
     memo = request.form['memo']
@@ -177,9 +181,13 @@ def make_sche():
         'start_time': start_time,
         'end_date': end_date,
         'end_time': end_time,
-        'startend': startend,
+        'start_end': start_end,
+        'alert1_katalk': alert1_katalk,
+        'alert1_email' : alert1_email,
         'alert1_day': alert1_day,
         'alert1_time': alert1_time,
+        'alert2_katalk': alert2_katalk,
+        'alert2_email' : alert2_email,
         'alert2_day': alert2_day,
         'alert2_time': alert2_time,
         'memo': memo
@@ -258,7 +266,7 @@ def send_email():
     from email.mime.multipart import MIMEMultipart
     from email.mime.text import MIMEText
 
-    me = "doggo_and_me@daum.net"
+    me = "doggo.and.mee@gmail.com"
     my_password = "zkaltkak12doggo"
     you = "non_named@naver.com"
 
@@ -282,10 +290,9 @@ def send_email():
     s.sendmail(me, you, msg.as_string())
     # 프로그램을 종료합니다.
     s.quit()
-
+#send_email()
 # 6-2. 카톡 메시지전송 함수
-# 6-3. 스케줄 함수
-
+# 6-3. 알림보내기 (schedule)
 import schedule
 import time
 import datetime
@@ -294,8 +301,8 @@ from pprint import pprint
 def job():
     print("일하고 있어용")
     # 조건문
-    # 이메일알림에 체크되어 있으면 -> 6-1 실행
-    # 카톡알림에 체크되어있으면 -> 6-2 실행
+    # 이메일알림에 값이 있으면 -> 값에 따라 6-1 실행
+    # 카톡알림에 값이 있으면 -> 6-2 실행
     # 둘 다 체크되어 있지 않으면 -> 종료.
 
 # 1분에 한번씩 실행
