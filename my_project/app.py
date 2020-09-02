@@ -267,7 +267,7 @@ def send_email():
     from email.mime.text import MIMEText
 
     me = "doggo.and.mee@gmail.com"
-    my_password = ""
+    my_password = "  "
     you = "non_named@naver.com"
 
     ## 여기서부터 코드를 작성하세요.
