@@ -165,14 +165,12 @@ def make_sche():
     end_date = request.form['end_date']
     end_time = request.form['end_time']
     start_end = request.form['start_end']
-    alert1_katalk = request.form['alert1_katalk']
-    alert1_email = request.form['alert1_email']
-    alert1_day = request.form['alert1_day']
-    alert1_time = request.form['alert1_time']
-    alert2_katalk = request.form['alert2_katalk']
-    alert2_email = request.form['alert2_email']
-    alert2_day = request.form['alert2_day']
-    alert2_time = request.form['alert2_time']
+    alert_k = request.form['alert_k']
+    alert_k_date = request.form['alert_k_date']
+    alert_k_time = request.form['alert_k_time']
+    alert_e = request.form['alert_e']
+    alert_e_date = request.form['alert_e_date']
+    alert_e_time = request.form['alert_e_time']
     memo = request.form['memo']
     doc = {
         'userID': userID,
@@ -182,27 +180,25 @@ def make_sche():
         'end_date': end_date,
         'end_time': end_time,
         'start_end': start_end,
-        'alert1_katalk': alert1_katalk,
-        'alert1_email' : alert1_email,
-        'alert1_day': alert1_day,
-        'alert1_time': alert1_time,
-        'alert2_katalk': alert2_katalk,
-        'alert2_email' : alert2_email,
-        'alert2_day': alert2_day,
-        'alert2_time': alert2_time,
+        'alert_k': alert_k,
+        'alert_k_date' : alert_k_date,
+        'alert_k_time': alert_k_time,
+        'alert_e': alert_e,
+        'alert_e_date' : alert_e_date,
+        'alert_e_time': alert_e_time,
         'memo': memo
     }
     db.todo.insert_one(doc)
     return jsonify({'result': 'success', 'msg': '작성하신 대로 스케줄을 저장했습니다. 멍!'})
 
 
-# 2. 일정 조회(Read) - /readsche (POST)
-@app.route('/readsche', methods=['POST'])
+# 2. 일정 조회(Read) - /readsche (GET)
+@app.route('/readsche', methods=['GET'])
 @login_required #데코레이터
 def read_sche():
     userID = g.user_id
-    todolist = list(db.todo.find({'userID': userID}))
-    return dumps({'result': 'success', 'todolist': todolist, 'msg': '일정을 불러왔습니다. 멍!'})
+    sche_list = list(db.todo.find({'userID': userID}))
+    return dumps({'result': 'success', 'sche_list': sche_list, 'msg': '일정을 불러왔습니다. 멍!'})
 
 
 # 3. 일정 검색(Read?) - /findsche (POST)
@@ -211,8 +207,8 @@ def read_sche():
 def find_sche():
     userID = g.user_id
     keyword = request.form['keyword']
-    searched = list(db.todo.find({'todo': keyword, 'userID': userID}, {'_id': 0}))
-    return jsonify({'result': 'success', 'searched': searched, 'msg': '검색 완료!'})
+    searched = list(db.todo.find({'todo': keyword, 'userID': userID}))
+    return dumps({'result': 'success', 'searched': searched, 'msg': '검색 완료!'})
 
 
 # 4-1. 일정 변경을 위한 조회(find-one) - /readasche (GET)
@@ -259,7 +255,19 @@ def del_sche():
     return dumps({'result': 'success', 'msg': '선택하신 일정이 삭제되었습니다. 멍!'})
 
 
-# 6. 알림 보내기?
+# 6. 알림 보내기 - schedule
+import schedule, time, datetime
+from pprint import pprint
+
+###알람체크함수 - 현재시간과 비교해 이메일, 카톡 알림시간 체크###
+def alert_send():
+    # 현재시간과 비교
+    now = datetime.datetime.now()
+    print(now)
+    todos = list(db.todo.find({}))
+    #fortodo in todos:
+
+
 # 6-1. 이메일전송함수
 def send_email():
     import smtplib
@@ -296,29 +304,30 @@ def send_email():
     s.sendmail(me, you, msg.as_string())
     # 메일보내기 프로그램을 종료합니다.
     s.quit()
-#send_email()
 
 # 6-2. 카톡 메시지전송 함수
-# 6-3. 알림보내기 (schedule)
-import schedule
-import time
-import datetime
-from pprint import pprint
+#def send_katalk():
 
+# 6-3. schedule로 1분마다 반복실행하며 설정한 시간에 알림 보내기
 def job():
-    print("일하고 있어용")
-    # 조건문
-    # 이메일알림에 값이 있으면 -> 값에 따라 6-1 실행
-    # 카톡알림에 값이 있으면 -> 6-2 실행
-    # 둘 다 체크되어 있지 않으면 -> 종료.
+    print("여기에 할 일을 넣기")
+    send_email()
+    #send_katalk()
 
-# 1분에 한번씩 실행
-schedule.every(60).seconds.do(job)
-#현재시간과 비교
-now = datetime.datetime.now()
-print(now)
+def run():
+    #schedule.every(60).seconds.do(job)
+    while True:
+        schedule.run_pending()
+
+
+#if __name__ == "__main__":
+#    run()
+
+
+
+
 #job확인
-pprint(schedule.jobs)
+#pprint(schedule.jobs)
 #job실행-예약일정에 상관없이 모든 job이 1회 실행
 #schedule.run_all()
 

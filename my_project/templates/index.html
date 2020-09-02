@@ -55,7 +55,7 @@
             border: solid black;
         }
 
-        .sche_card, .fix_card {
+        .sche_card, .searched_card, .fix_card {
             margin: 15px;
             padding: 10px;
             border: 3px darkgray double;
@@ -208,41 +208,35 @@
             if ($('#todo').val() == 0 || $('#start_date').val() == 0) {
                 alert("멍! 할 일과 시작일이 있어야 일정을 저장할 수 있어요!")
             } else {
-                //let userID = $('#userID').text();
                 let todo = $('#todo').val();
                 let start_date = $('#start_date').val();
                 let start_time = $('#start_time').val();
                 let end_date = $('#end_date').val();
                 let end_time = $('#end_time').val();
                 let start_end = $('input:checkbox[id="startend"]').is(':checked');
-                let alert1_day = $('#alert_1_day').val();
-                let alert1_time = $('#alert_1_time').val();
-                let alert1_katalk = $('input:checkbox[id="alert_1_katalk"]').is(':checked');
-                let alert1_email = $('input:checkbox[id="alert_1_email"]').is(':checked');
-                let alert2_day = $('#alert_2_day option:selected').val();
-                let alert2_time = $('#alert_2_time').val();
-                let alert2_katalk = $('input:checkbox[id="alert_2_katalk"]').is(':checked');
-                let alert2_email = $('input:checkbox[id="alert_2_email"]').is(':checked');
+                let alert_k = $('input:checkbox[id="alert_k"]').is(':checked');
+                let alert_k_date = $('#alert_k_date option:selected').val();
+                let alert_k_time = $('#alert_k_time').val();
+                let alert_e = $('input:checkbox[id="alert_e"]').is(':checked');
+                let alert_e_date = $('#alert_e_date option:selected').val();
+                let alert_e_time = $('#alert_e_time').val();
                 let memo = $('#memo').val();
                 $.ajax({
                     type: "POST",
                     url: "/makesche",
                     data: {
-                        //'userID' : userID,
                         'todo': todo,
                         'start_date': start_date,
                         'start_time': start_time,
                         'end_date': end_date,
                         'end_time': end_time,
                         'start_end': start_end,
-                        'alert1_katalk': alert1_katalk,
-                        'alert1_email': alert1_email,
-                        'alert1_day': alert1_day,
-                        'alert1_time': alert1_time,
-                        'alert2_katalk': alert2_katalk,
-                        'alert2_email': alert2_email,
-                        'alert2_day': alert2_day,
-                        'alert2_time': alert2_time,
+                        'alert_k': alert_k,
+                        'alert_k_date': alert_k_date,
+                        'alert_k_time': alert_k_time,
+                        'alert_e': alert_e,
+                        'alert_e_date': alert_e_date,
+                        'alert_e_time': alert_e_time,
                         'memo': memo
                     },
                     success: function (response) { // 성공하면
@@ -257,71 +251,77 @@
             }
         }
 
-        //2. 일정 조회(Read) - /readsche (POST)
+        //2. 일정 조회(Read) - /readsche (GET)
         function readsche() {
             $('#day_layout').empty();
-            let userID = $('#userID').text();
             $.ajax({
-                type: "POST",
+                type: "GET",
                 url: '/readsche',
-                data: {'userID': userID},
+                data: {},
                 success: function (response) {
                     response = JSON.parse(response)
-                    let todolist = response['todolist'];
-                    for (i = 0; i < todolist.length; i++) {
-                        let a_todo = todolist[i];
-                        let todo = a_todo['todo']
-                        let start_date = a_todo['start_date']
-                        let end_date = a_todo['end_date']
-                        let start_time = a_todo['start_time']
-                        let end_time = a_todo['end_time']
-                        let alert1_day = a_todo['alert1_day']
-                        let alert1_time = a_todo['alert1_time']
-                        let alert1_katalk = a_todo['alert1_katalk']
-                        let alert1_email = a_todo['alert1_email']
-                        let alert2_day = a_todo['alert2_day']
-                        let alert2_time = a_todo['alert2_time']
-                        let alert2_katalk = a_todo['alert2_katalk']
-                        let alert2_email = a_todo['alert2_email']
-                        let memo = a_todo['memo']
+                    let sche_list = response['sche_list'];
+                    for (i = 0; i < sche_list.length; i++) {
+                        let a_sche = sche_list[i];
+                        let todo = a_sche['todo']
+                        let start_date = a_sche['start_date']
+                        let end_date = a_sche['end_date']
+                        let start_time = a_sche['start_time']
+                        let end_time = a_sche['end_time']
+                        let alert_k_date = a_sche['alert_k_date']
+                        let alert_k_time = a_sche['alert_k_time']
+                        let alert_e_date = a_sche['alert_e_date']
+                        let alert_e_time = a_sche['alert_e_time']
+                        let memo = a_sche['memo']
+                        function ox(){
 
-                        //function cal_day() {}
-
-                        function OX() {
-                            if (alert1_katalk == "true") {
-                                $('#alert_1_katalk').append('⭕');
-                            } else if (alert1_katalk == "false") {
-                                $('#alert_1_katalk').append('❌')
-                            }
-                            if (alert1_email == "true") {
-                                $('#alert_1_email').append('⭕');
-                            } else if (alert1_email == "false") {
-                                $('#alert_1_email').append('❌')
-                            }
-                            if (alert2_katalk == "true") {
-                                $('#alert_2_katalk').append('⭕');
-                            } else if (alert2_katalk == "false") {
-                                $('#alert_2_katalk').append('❌')
-                            }
-                            if (alert2_email == "true") {
-                                $('#alert_2_email').append('⭕');
-                            } else if (alert2_email == "false") {
-                                $('#alert_2_email').append('❌')
-                            }
                         }
-                        let todo_card = `<div class="sche_card" data-id="${a_todo['_id']['$oid']}">
+                        let sche_card = `<div class="sche_card" data-id="${a_sche['_id']['$oid']}">
                                             <div class="schedule_date">${start_date}~${end_date}</div>
                                             <button onclick="readasche(this)">편집</button>
                                             <button onclick="delsche(this)">삭제</button>
                                             <li>(${start_time}~${end_time})${todo}</li>
                                             ${memo}
-                                            <li class="alert_1">알림1
-                                            :   카톡<span id="alert_1_katalk"></span> / 메일 <span id="alert_1_email"></span></li>
-                                            <li class="alert_2">알림2
-                                            : 카톡<span id="alert_2_katalk"></span> / 메일 <span id="alert_2_email"></span></li>
+                                            <li>💬카카오톡 알림 - <span class="alert_k"></span><br>
+                                             날짜 : ${alert_k_date}</span><br>
+                                             시간 : ${alert_k_time}</li>
+                                            <li>📧이메일 알림 - <span class="alert_e"></span><br>
+                                             날짜 : ${alert_e_date}</span><br>
+                                             시간 : ${alert_e_time}</li>
                                         </div>`
-                        $('#day_layout').append(todo_card);
-                        OX();
+                        $('#day_layout').append(sche_card);
+                    }
+                }
+            })
+            OX();
+        }
+
+        //2-1. 카톡, 이메일 알림 true이면 o, false이면 x 붙여주는 함수/readsche(GET)
+        function OX() {
+            $.ajax({
+                type: "GET",
+                url: '/readsche',
+                data: {},
+                success: function (response) {
+                    response = JSON.parse(response)
+                    let sche_list = response['sche_list'];
+                    console.log(sche_list)
+                    for (i = 0; i < sche_list.length; i++) {
+                        let a_sche = sche_list[i];
+                        let alert_k = a_sche['alert_k']
+                        let alert_e = a_sche['alert_e']
+                        console.log(alert_k)
+                        console.log(alert_e)
+                        if (alert_k == "true") {
+                            $('.alert_k').append('⭕');
+                        } else if (alert_k == "false") {
+                            $('.alert_k').append('❌')
+                        }
+                        if (alert_e == "true") {
+                            $('.alert_e').append('⭕');
+                        } else if (alert_e == "false") {
+                            $('.alert_e').append('❌')
+                        }
                     }
                 }
             })
@@ -337,20 +337,27 @@
                 url: "/findsche",
                 data: {'keyword': keyword},
                 success: function (response) {
+                    response = JSON.parse(response)
                     if (response["result"] == "success") {
                         let searched_list = response['searched'];
-                        console.log(searched_list)
                         if (searched_list.length == 0) {
-                            alert("🐶 검색결과가 없습니다!")
+                            alert("🐶 멍! 검색결과가 없습니다! 검색어를 확인해 주세요.")
                         } else {
                             for (i = 0; i < searched_list.length; i++) {
                                 let searched = searched_list[i];
-                                let searched_card = `<div class="sche_card">
-                                                    <div class="schedule_date">${searched['start_date']}~${searched['end_date']}</div>
-                                                    <button onclick="readasche(e)">편집</button>
-                                                    <button onclick="delsche('${searched['todo']}')">삭제</button>
-                                                    <li>(${searched['start_time']}~${searched['end_time']})${searched['todo']}</li>${searched['memo']}
-                                               </div>`
+                                let searched_card = `<div class="searched_card" data-id="${searched['_id']['$oid']}">
+                                            <div class="schedule_date">${searched['start_date']}~${searched['end_date']}</div>
+                                            <button onclick="readasche(this)">편집</button>
+                                            <button onclick="delsche(this)">삭제</button>
+                                            <li>(${searched['start_time']}~${searched['end_time']})${searched['todo']}</li>
+                                            ${searched['memo']}
+                                            <li class="alert_k">💬카카오톡 알림 - ${searched['alert_k']}<br>
+                                             날짜 : ${searched['alert_k_date']}</span><br>
+                                             시간 : ${searched['alert_k_time']}</li>
+                                            <li class="alert_e">📧이메일 알림 - ${searched['alert_e']}<br>
+                                             날짜 : ${searched['alert_e_date']}</span><br>
+                                             시간 : ${searched['alert_e_time']}</li>
+                                        </div>`
                                 $('#day_layout').append(searched_card);
                             }
                             alert(response["msg"]);
@@ -502,35 +509,34 @@
         </button>
         <br>
         <div id="input_schedule">
-            <h3>🐶어떤 일정을 적어둘까요?</h3><br>
+            <h3>📝어떤 일정을 적어둘까요?</h3><br>
             <input type="text" width="300px" id="todo" placeholder="멍멍! 할 일이 뭔가요?"><br><br>
             언제부터 해야 하나요?(시작일)<br>
             <input type="date" id="start_date"><input type="time" id="start_time"> <br><br>
             언제까지 해야 하나요?(종료일)<br>
             <input type="date" id="end_date"><input type="time" id="end_time"><br>
             종일!(시작일=종료일)<input type="checkbox" id="startend"><br><br>
-            <h3>🐕잊지 않게 알려드릴게요!</h3><br>
-            <select id="alert_1_day">
-                <option value="" selected disabled hidden>언제 알려드릴까요?</option>
-                <option value="on_day" id="">스케줄 당일에 알려줘!</option>
-                <option value="day_ago" id="">1일 전에 알려줘!</option>
-                <option value="3days_ago" id="">3일 전에 알려줘!</option>
-                <option value="week_ago" id="">1주일 전에 알려줘!</option>
+            <h3>✅잊지 않게 알려드릴게요!</h3><br>
+            💬카카오톡 메시지 알림 <input type="checkbox" id="alert_k"><br>
+            <select id="alert_k_date">
+                <option value="" selected disabled hidden>언제 카톡을 보내드릴까요?</option>
+                <option value="on_day" id="">일정 당일</option>
+                <option value="day_ago" id="">일정 1일 전</option>
+                <option value="3days_ago" id="">일정 3일 전</option>
+                <option value="week_ago" id="">일정 1주일 전</option>
             </select>
-            <input type="time" id="alert_1_time"><br>
-            카카오톡 메시지 알림 <input type="checkbox" id="alert_1_katalk">
-            이메일 알림 <input type="checkbox" id="alert_1_email"><br><br>
+            <input type="time" id="alert_k_time"><br><br>
 
-            <select id="alert_2_day">
-                <option value="" selected disabled hidden>한 번 더 알려드릴까요?</option>
-                <option value="on_day">스케줄 당일에 알려줘!</option>
-                <option value="day_ago">1일 전에 알려줘!</option>
-                <option value="3days_ago">3일 전에 알려줘!</option>
-                <option value="week_ago">1주일 전에 알려줘!</option>
+            📧이메일 알림 <input type="checkbox" id="alert_e"><br>
+            <select id="alert_e_date">
+                <option value="" selected disabled hidden>언제 이메일을 보내드릴까요?</option>
+                <option value="on_day">일정 당일</option>
+                <option value="day_ago">일정 1일 전</option>
+                <option value="3days_ago">일정 3일 전</option>
+                <option value="week_ago">일정 1주일 전</option>
             </select>
-            <input type="time" id="alert_2_time"><br>
-            카카오톡 메시지 알림 <input type="checkbox" id="alert_2_katalk">
-            이메일 알림 <input type="checkbox" id="alert_2_email"><br><br>
+            <input type="time" id="alert_e_time"><br>
+
             <textarea id="memo" placeholder="메모를 더 남길 수 있어요. 멍!" cols="30" rows="5"></textarea><br><br>
             <input type="submit" onclick="makesche()" value="저장!🐾">
         </div>
