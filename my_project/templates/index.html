@@ -285,32 +285,30 @@
                         let alert2_email = a_todo['alert2_email']
                         let memo = a_todo['memo']
 
-                        function cal_day() {
-                        }
+                        //function cal_day() {}
 
                         function OX() {
                             if (alert1_katalk == "true") {
-                                $('.alert_1_katalk').append('yes');
+                                $('#alert_1_katalk').append('⭕');
                             } else if (alert1_katalk == "false") {
-                                $('.alert_1_katalk').append('❌')
+                                $('#alert_1_katalk').append('❌')
                             }
                             if (alert1_email == "true") {
-                                $('.alert_1_email').append('⭕');
+                                $('#alert_1_email').append('⭕');
                             } else if (alert1_email == "false") {
-                                $('.alert_1_email').append('❌')
+                                $('#alert_1_email').append('❌')
                             }
                             if (alert2_katalk == "true") {
-                                $('.alert_2_katalk').append('⭕');
+                                $('#alert_2_katalk').append('⭕');
                             } else if (alert2_katalk == "false") {
-                                $('.alert_2_katalk').append('❌')
+                                $('#alert_2_katalk').append('❌')
                             }
                             if (alert2_email == "true") {
-                                $('.alert_2_email').append('⭕');
+                                $('#alert_2_email').append('⭕');
                             } else if (alert2_email == "false") {
-                                $('.alert_2_email').append('❌')
+                                $('#alert_2_email').append('❌')
                             }
                         }
-                        OX();
                         let todo_card = `<div class="sche_card" data-id="${a_todo['_id']['$oid']}">
                                             <div class="schedule_date">${start_date}~${end_date}</div>
                                             <button onclick="readasche(this)">편집</button>
@@ -318,11 +316,12 @@
                                             <li>(${start_time}~${end_time})${todo}</li>
                                             ${memo}
                                             <li class="alert_1">알림1
-                                            :   카톡<span class="alert_1_katalk"></span> / 메일 <span class="alert_1_email"></span></li>
+                                            :   카톡<span id="alert_1_katalk"></span> / 메일 <span id="alert_1_email"></span></li>
                                             <li class="alert_2">알림2
-                                            : 카톡<span class="alert_2_katalk"></span> / 메일 <span class="alert_2_email"></span></li>
+                                            : 카톡<span id="alert_2_katalk"></span> / 메일 <span id="alert_2_email"></span></li>
                                         </div>`
                         $('#day_layout').append(todo_card);
+                        OX();
                     }
                 }
             })

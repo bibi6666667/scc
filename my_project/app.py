@@ -267,30 +267,37 @@ def send_email():
     from email.mime.text import MIMEText
 
     me = "doggo.and.mee@gmail.com"
-    my_password = "zkaltkak12doggo"
+    my_password = "lfcpawgytwbpryal"
     you = "non_named@naver.com"
 
     ## 여기서부터 코드를 작성하세요.
+    # 이메일 작성 form을 받아옵니다.
     msg = MIMEMultipart('alternative')
+    # 제목을 입력합니다.
     msg['Subject'] = "Alert"
+    # 송신자를 입력합니다.
     msg['From'] = me
+    # 수신자를 입력합니다.
     msg['To'] = you
 
+    # 이메일 내용을 작성합니다
     html = '<html><body><p>Hi, I have the following alerts for you!</p></body></html>'
+    # 이메일 내용의 타입을 지정합니다.
     part2 = MIMEText(html, 'html')
-
+    # 이메일 form에 작성 내용을 입력합니다
     msg.attach(part2)
     ## 여기에서 코드 작성이 끝납니다.
 
-    # Gmail 관련 필요한 정보를 획득합니다.
+    # Gmail 을 통해 전달할 것임을 표시합니다.
     s = smtplib.SMTP_SSL('smtp.gmail.com',465)
     # Gmail에 로그인합니다.
     s.login(me, my_password)
     # 메일을 전송합니다.
     s.sendmail(me, you, msg.as_string())
-    # 프로그램을 종료합니다.
+    # 메일보내기 프로그램을 종료합니다.
     s.quit()
 #send_email()
+
 # 6-2. 카톡 메시지전송 함수
 # 6-3. 알림보내기 (schedule)
 import schedule
@@ -313,7 +320,7 @@ print(now)
 #job확인
 pprint(schedule.jobs)
 #job실행-예약일정에 상관없이 모든 job이 1회 실행
-schedule.run_all()
+#schedule.run_all()
 
 
 # 7. 날씨 조회 /weather (GET)
