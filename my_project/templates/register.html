@@ -49,9 +49,17 @@
             }
         }
 
-        function dplct_check() {
+        /*function dplct_check() {
+            let userID = $('#userid').val()
+            $.ajax({
+                type: "POST",
+                url: "/api/dplct_check",
+                data: {'userID': userID },
+                success: function (response) {
 
-        }
+                }
+            })
+        }*/
 
         function register() {
             if ($('#userid').val() == 0 || $('#userpw').val() == 0 || $('#usernick').val() == 0) {
@@ -74,6 +82,7 @@
                         }
                     }
                 })
+                dplct_check()
             }
         }
     </script>

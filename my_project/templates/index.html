@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-
-    <title>멍이와 나🐶</title>
+    <title>멍이와 나 Doggo & Me 🐶</title>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta property="og:title" content="멍이와 나 Doggo & Me"/>
+    <meta property="og:description" content="일정을 관리하고 알림을 보내주는 당신만의 집사 강아지, '멍이'를 만나 보세요🐕"/>
+    <meta property="og:image" content="{{ url_for('static', filename='ogimage.png') }}"/>
     <!--Google Web Font-->
     <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet">
     <!-- Bootstrap CSS -->
@@ -99,8 +101,7 @@
                 $('#header').hide()
                 $('#schedules').hide()
                 $('#guest_info').show()
-                /*alert('로그인을 해주세요')
-                window.location.href = '/login'*/
+                alert('"멍이와 나"는 로그인이 필요한 서비스에요. 회원가입/로그인을 해 주세요🐕')
             } else {
                 // 쿠기가 있으면, 유저 정보를 불러옵니다.
                 $('#guest_info').hide()
@@ -109,6 +110,7 @@
             show_date()
             show_month()
             show_day()
+            show_1day()
             readsche()
         });
 
@@ -214,11 +216,11 @@
                 let end_date = $('#end_date').val();
                 let end_time = $('#end_time').val();
                 let start_end = $('input:checkbox[id="startend"]').is(':checked');
-                let alert_k = $('input:checkbox[id="alert_k"]').is(':checked');
-                let alert_k_date = $('#alert_k_date option:selected').val();
+                let alert_k = $('input:checkbox[id="alert_k_fix"]').is(':checked');
+                let alert_k_date = $('#alert_k_date').val();
                 let alert_k_time = $('#alert_k_time').val();
-                let alert_e = $('input:checkbox[id="alert_e"]').is(':checked');
-                let alert_e_date = $('#alert_e_date option:selected').val();
+                let alert_e = $('input:checkbox[id="alert_e_fix"]').is(':checked');
+                let alert_e_date = $('#alert_e_date').val();
                 let alert_e_time = $('#alert_e_time').val();
                 let memo = $('#memo').val();
                 $.ajax({
@@ -273,19 +275,16 @@
                         let alert_e_date = a_sche['alert_e_date']
                         let alert_e_time = a_sche['alert_e_time']
                         let memo = a_sche['memo']
-                        function ox(){
-
-                        }
                         let sche_card = `<div class="sche_card" data-id="${a_sche['_id']['$oid']}">
                                             <div class="schedule_date">${start_date}~${end_date}</div>
                                             <button onclick="readasche(this)">편집</button>
                                             <button onclick="delsche(this)">삭제</button>
                                             <li>(${start_time}~${end_time})${todo}</li>
                                             ${memo}
-                                            <li>💬카카오톡 알림 - <span class="alert_k"></span><br>
+                                            <li>💬카카오톡 알림 - <span class="alert_k${[i]}"></span><br>
                                              날짜 : ${alert_k_date}</span><br>
                                              시간 : ${alert_k_time}</li>
-                                            <li>📧이메일 알림 - <span class="alert_e"></span><br>
+                                            <li>📧이메일 알림 - <span class="alert_e${[i]}"></span><br>
                                              날짜 : ${alert_e_date}</span><br>
                                              시간 : ${alert_e_time}</li>
                                         </div>`
@@ -305,22 +304,19 @@
                 success: function (response) {
                     response = JSON.parse(response)
                     let sche_list = response['sche_list'];
-                    console.log(sche_list)
                     for (i = 0; i < sche_list.length; i++) {
                         let a_sche = sche_list[i];
                         let alert_k = a_sche['alert_k']
                         let alert_e = a_sche['alert_e']
-                        console.log(alert_k)
-                        console.log(alert_e)
                         if (alert_k == "true") {
-                            $('.alert_k').append('⭕');
+                            $('.alert_k' + i).append('⭕');
                         } else if (alert_k == "false") {
-                            $('.alert_k').append('❌')
+                            $('.alert_k' + i).append('❌')
                         }
                         if (alert_e == "true") {
-                            $('.alert_e').append('⭕');
+                            $('.alert_e' + i).append('⭕');
                         } else if (alert_e == "false") {
-                            $('.alert_e').append('❌')
+                            $('.alert_e' + i).append('❌')
                         }
                     }
                 }
@@ -373,7 +369,6 @@
         function readasche(e) {
             let sche_card = $(e).parent();
             let id = sche_card.attr('data-id');
-            console.log(id);
             $.ajax({
                 type: "GET",
                 url: "/readasche",
@@ -388,23 +383,64 @@
                         let end_date = fix_todo['end_date']
                         let start_time = fix_todo['start_time']
                         let end_time = fix_todo['end_time']
+                        let alert_k_date = fix_todo['alert_k_date']
+                        let alert_k_time = fix_todo['alert_k_time']
+                        let alert_e_date = fix_todo['alert_e_date']
+                        let alert_e_time = fix_todo['alert_e_time']
                         let memo = fix_todo['memo'];
                         let fix_card = `<div class="fix_card" data-id="${id_fix}">
-                                            <div class="schedule_date"><input type="date" id="start_date_fix" value="${start_date}">
-                                            ~<input type="date" id="end_date_fix" value="${end_date}">
+                                            <div class="schedule_date">
+                                                날짜 : <input type="date" id="start_date_fix" value="${start_date}">
+                                                ~<input type="date" id="end_date_fix" value="${end_date}"><br>
+                                                (<input type="time" id="start_time_fix" value="${start_time}">
+                                                ~<input type="time" id="end_time_fix" value="${end_time}">)
                                             </div>
+                                            <li><input type="text" id="todo_fix" width="500px" value="${todo}"></li>
+                                            💬카카오톡 알림 : <input type="checkbox" id="alert_k_fix">
+                                            <input type="date" id="alert_k_date_fix" value="${alert_k_date}">,
+                                            <input type="time" id="alert_k_time_fix" value="${alert_k_time}"><br>
+                                            📧이메일 알림 : <input type="checkbox" id="alert_e_fix">
+                                            <input type="date" id="alert_e_date_fix" value="${alert_e_date}">,
+                                            <input type="time" id="alert_e_time_fix" value="${alert_e_time}">
+                                            <textarea id="memo_fix" cols="30" rows="5">${memo}</textarea><br>
                                             <button id="readasche" onclick="readasche(this)">편집</button>
                                             <button id="fixsche" onclick="fixsche(this)">저장🐾</button>
                                             <button id="delsche" onclick="delsche(this)">삭제</button>
-                                            <li>(<input type="time" id="start_time_fix" value="${start_time}">
-                                                ~<input type="time" id="end_time_fix" value="${end_time}">)
-                                                <input type="text" id="todo_fix" width="500px"  value="${todo}"></li>
-                                            <textarea id="memo_fix" cols="30" rows="5">${memo}</textarea>
                                         </div>`
                         $('#day_layout').empty();
                         $('#day_layout').append(fix_card);
                     }
+                }
+            })
+            checked(e)
+        }
 
+        //4-1(1). 카톡, 이메일알림 o면 checked, x면 체크해제하는 함수/readsche(GET)
+        function checked(e) {
+            let sche_card = $(e).parent();
+            let id = sche_card.attr('data-id');
+            $.ajax({
+                type: "GET",
+                url: "/readasche",
+                data: {'id': id},
+                success: function (response) {
+                    response = JSON.parse(response)
+                    if (response["result"] == "success") {
+                        let fix_todo = response["fix_todo"];
+                        let alert_k = fix_todo['alert_k']
+                        let alert_e = fix_todo['alert_e']
+
+                        if (alert_k == "true") {
+                            $('#alert_k_fix').attr('checked',true);
+                        } else if (alert_k == "false") {
+                            $('#alert_k_fix').attr('checked',false);
+                        }
+                        if (alert_e == "true") {
+                            $('#alert_e_fix').attr('checked',true);
+                        } else if (alert_e == "false") {
+                            $('#alert_e_fix').attr('checked',false);
+                        }
+                    }
                 }
             })
         }
@@ -413,21 +449,18 @@
         function fixsche(e) {
             let fix_card = $(e).parent();
             let id = fix_card.attr('data-id');
-            console.log(id);
-            // 이 부분은 1.일정생성이 아닌 4-1.일정편집input 이라서 id값을 주지 않고 있다! 4-1에서 id값을 주어야.
             let todo = $('#todo_fix').val();
             let start_date = $('#start_date_fix').val();
             let start_time = $('#start_time_fix').val();
             let end_date = $('#end_date_fix').val();
             let end_time = $('#end_time_fix').val();
+            let alert_k = $('input:checkbox[id="alert_k_fix"]').is(':checked');
+            let alert_k_date = $('#alert_k_date_fix').val();
+            let alert_k_time = $('#alert_k_time_fix').val();
+            let alert_e = $('input:checkbox[id="alert_e_fix"]').is(':checked');
+            let alert_e_date = $('#alert_e_date_fix').val();
+            let alert_e_time = $('#alert_e_time_fix').val();
             let memo = $('#memo_fix').val();
-            //let startend = $('#startend_fix').val();
-            //let alert1_day = $('#alert_1_day_fix').val();
-            //let alert1_time = $('#alert_1_time_fix').val();
-            // +알림1-카톡/이메일알림여부
-            //let alert2_day = $('#alert_2_day_fix option:selected').val();
-            //let alert2_time = $('#alert_2_time_fix').val();
-            // +알림2-카톡/이메일알림여부
             $.ajax({
                 type: "POST",
                 url: "/fixsche",
@@ -438,11 +471,13 @@
                     'start_time': start_time,
                     'end_date': end_date,
                     'end_time': end_time,
+                    'alert_k': alert_k,
+                    'alert_k_date': alert_k_date,
+                    'alert_k_time': alert_k_time,
+                    'alert_e': alert_e,
+                    'alert_e_date': alert_e_date,
+                    'alert_e_time': alert_e_time,
                     'memo': memo
-                    /*'alert1_day': alert1_day,
-                    'alert1_time': alert1_time,
-                    'alert2_day': alert2_day,
-                    'alert2_time': alert2_time,*/
                 },
                 success: function (response) { // 성공하면
                     if (response["result"] == "success") {
@@ -517,26 +552,12 @@
             <input type="date" id="end_date"><input type="time" id="end_time"><br>
             종일!(시작일=종료일)<input type="checkbox" id="startend"><br><br>
             <h3>✅잊지 않게 알려드릴게요!</h3><br>
-            💬카카오톡 메시지 알림 <input type="checkbox" id="alert_k"><br>
-            <select id="alert_k_date">
-                <option value="" selected disabled hidden>언제 카톡을 보내드릴까요?</option>
-                <option value="on_day" id="">일정 당일</option>
-                <option value="day_ago" id="">일정 1일 전</option>
-                <option value="3days_ago" id="">일정 3일 전</option>
-                <option value="week_ago" id="">일정 1주일 전</option>
-            </select>
+            💬카카오톡 메시지로 알려줘 <input type="checkbox" id="alert_k"><br>
+            <input type="date" id="alert_k_date">
             <input type="time" id="alert_k_time"><br><br>
-
-            📧이메일 알림 <input type="checkbox" id="alert_e"><br>
-            <select id="alert_e_date">
-                <option value="" selected disabled hidden>언제 이메일을 보내드릴까요?</option>
-                <option value="on_day">일정 당일</option>
-                <option value="day_ago">일정 1일 전</option>
-                <option value="3days_ago">일정 3일 전</option>
-                <option value="week_ago">일정 1주일 전</option>
-            </select>
-            <input type="time" id="alert_e_time"><br>
-
+            📧이메일을 보내서 알려줘 <input type="checkbox" id="alert_e"><br>
+            <input type="date" id="alert_e_date">
+            <input type="time" id="alert_e_time"><br><br>
             <textarea id="memo" placeholder="메모를 더 남길 수 있어요. 멍!" cols="30" rows="5"></textarea><br><br>
             <input type="submit" onclick="makesche()" value="저장!🐾">
         </div>
