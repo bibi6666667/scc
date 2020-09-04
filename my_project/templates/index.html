@@ -215,7 +215,6 @@
                 let start_time = $('#start_time').val();
                 let end_date = $('#end_date').val();
                 let end_time = $('#end_time').val();
-                let start_end = $('input:checkbox[id="startend"]').is(':checked');
                 let alert_k = $('input:checkbox[id="alert_k_fix"]').is(':checked');
                 let alert_k_date = $('#alert_k_date').val();
                 let alert_k_time = $('#alert_k_time').val();
@@ -232,7 +231,6 @@
                         'start_time': start_time,
                         'end_date': end_date,
                         'end_time': end_time,
-                        'start_end': start_end,
                         'alert_k': alert_k,
                         'alert_k_date': alert_k_date,
                         'alert_k_time': alert_k_time,
@@ -282,10 +280,10 @@
                                             <li>(${start_time}~${end_time})${todo}</li>
                                             ${memo}
                                             <li>💬카카오톡 알림 - <span class="alert_k${[i]}"></span><br>
-                                             날짜 : ${alert_k_date}</span><br>
+                                             날짜 : ${alert_k_date}<br>
                                              시간 : ${alert_k_time}</li>
                                             <li>📧이메일 알림 - <span class="alert_e${[i]}"></span><br>
-                                             날짜 : ${alert_e_date}</span><br>
+                                             날짜 : ${alert_e_date}<br>
                                              시간 : ${alert_e_time}</li>
                                         </div>`
                         $('#day_layout').append(sche_card);
@@ -431,14 +429,14 @@
                         let alert_e = fix_todo['alert_e']
 
                         if (alert_k == "true") {
-                            $('#alert_k_fix').attr('checked',true);
+                            $('#alert_k_fix').attr('checked', true);
                         } else if (alert_k == "false") {
-                            $('#alert_k_fix').attr('checked',false);
+                            $('#alert_k_fix').attr('checked', false);
                         }
                         if (alert_e == "true") {
-                            $('#alert_e_fix').attr('checked',true);
+                            $('#alert_e_fix').attr('checked', true);
                         } else if (alert_e == "false") {
-                            $('#alert_e_fix').attr('checked',false);
+                            $('#alert_e_fix').attr('checked', false);
                         }
                     }
                 }
@@ -550,7 +548,6 @@
             <input type="date" id="start_date"><input type="time" id="start_time"> <br><br>
             언제까지 해야 하나요?(종료일)<br>
             <input type="date" id="end_date"><input type="time" id="end_time"><br>
-            종일!(시작일=종료일)<input type="checkbox" id="startend"><br><br>
             <h3>✅잊지 않게 알려드릴게요!</h3><br>
             💬카카오톡 메시지로 알려줘 <input type="checkbox" id="alert_k"><br>
             <input type="date" id="alert_k_date">
@@ -574,37 +571,20 @@
         <input id="search" type="text" placeholder="일정을 검색할 수 있어요. 멍!">
         <button onclick="find_sche()">🔍</button>
         <div id="day_layout">
-            <div class="sche_card">
-                <div class="schedule_date">시작일~종료일</div>
-                <button onclick="readasche()">편집</button>
-                <button onclick="delsche()">삭제</button>
-                <li>(시작시간~종료시간) 일정명</li>
-                메모
-            </div>
-            <div class="sche_card">
-                <div class="schedule_date">15일 (토)</div>
-                <li>스파르타코딩클럽 - 프로젝트 계획 짜기!</li>
-            </div>
-            <div class="sche_card">
-                <div class="schedule_date">16일 (일)</div>
-                <li>(21:00~)친구들과 놀기!</li>
-            </div>
-            <div class="sche_card">
-                <div class="schedule_date">18일 (화)</div>
-                <li>소고기 사오기!</li>
-            </div>
-            <div class="sche_card">
-                <div class="schedule_date">19일 (수)</div>
-                <li>(19:30~22:30)스파르타코딩클럽 - 수업</li>
-            </div>
-            <div class="sche_card">
-                <div class="schedule_date">20일 (목)</div>
-                <li>밀린 집안일 하기 (빨래,청소)</li>
-                <li>이마트에서 장 봐오기</li>
-            </div>
-            <div class="sche_card">
-                <div class="schedule_date">31일 (월)</div>
-                <li>공포의 31데이..</li>
+            <div class="sche_card" data-id="${a_sche['_id']['$oid']}">
+                <div class="schedule_date">start_date~end_date</div>
+                <button onclick="readasche(this)">편집</button>
+                <button onclick="delsche(this)">삭제</button>
+                <li>(start_time~end_time)todo</li>
+                memo
+                <li>💬카카오톡 알림 - <span class="alert_k"></span><br>
+                    날짜 : alert_k_date<br>
+                    시간 : alert_k_time
+                </li>
+                <li>📧이메일 알림 - <span class="alert_e${[i]}"></span><br>
+                    날짜 : alert_e_date<br>
+                    시간 : alert_e_time
+                </li>
             </div>
         </div>
         <div id="week_layout">
