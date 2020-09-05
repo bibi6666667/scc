@@ -5,9 +5,9 @@ from functools import wraps
 from flask import g
 
 app = Flask(__name__)
-from pymongo import MongoClient
 
-client = MongoClient('localhost', 27017)
+from pymongo import MongoClient
+client = MongoClient('localhost',27017)
 db = client.dbsparta
 
 # JWT 토큰을 만들 때 필요한 비밀문자열입니다. 아무거나 입력해도 괜찮습니다.
@@ -23,7 +23,6 @@ import datetime
 # 회원가입 시엔, 비밀번호를 암호화하여 DB에 저장해두는 게 좋습니다.
 # 그렇지 않으면, 개발자(=나)가 회원들의 비밀번호를 볼 수 있으니까요.^^;
 import hashlib
-
 
 ###################
 # HTML 화면 보여주기#
@@ -61,7 +60,6 @@ def api_register():
     db.user.insert_one({'id': id_receive, 'pw': pw_hash, 'nick': nickname_receive})
 
     return jsonify({'result': 'success'})
-
 
 # [로그인 API]
 # id, pw를 받아서 맞춰보고, 토큰을 만들어 발급합니다.
@@ -119,7 +117,7 @@ def api_valid():
         return jsonify({'result': 'success', 'id': userinfo['id'], 'nickname': userinfo['nick']})
     except jwt.ExpiredSignatureError:
         # 위를 실행했는데 만료시간이 지났으면 에러가 납니다.
-        return jsonify({'result': 'fail', 'msg': '로그인 유지시간(10분)이 만료되었어요. 다시 로그인 해 주세요!🐕'})
+        return jsonify({'result': 'fail', 'msg': '로그인 유지시간(30분)이 만료되었어요. 다시 로그인 해 주세요!🐕'})
 
 ################
 #로그인 데코레이터#
@@ -164,7 +162,6 @@ def make_sche():
     start_time = request.form['start_time']
     end_date = request.form['end_date']
     end_time = request.form['end_time']
-    start_end = request.form['start_end']
     alert_k = request.form['alert_k']
     alert_k_date = request.form['alert_k_date']
     alert_k_time = request.form['alert_k_time']
@@ -179,7 +176,6 @@ def make_sche():
         'start_time': start_time,
         'end_date': end_date,
         'end_time': end_time,
-        'start_end': start_end,
         'alert_k': alert_k,
         'alert_k_date' : alert_k_date,
         'alert_k_time': alert_k_time,
@@ -213,9 +209,11 @@ def find_sche():
 
 # 4-1. 일정 변경을 위한 조회(find-one) - /readasche (GET)
 @app.route('/readasche', methods=['GET'])
+@login_required #데코레이터
 def read_a_sche():
+    userID = g.user_id
     fix_id = request.args.get('id')
-    fix_todo = db.todo.find_one({"_id": ObjectId(fix_id)})
+    fix_todo = db.todo.find_one({"_id": ObjectId(fix_id), 'userID': userID})
     return dumps({'result': 'success', 'fix_todo': fix_todo})
 
 
@@ -230,18 +228,25 @@ def fix_sche():
     start_time = request.form['start_time']
     end_date = request.form['end_date']
     end_time = request.form['end_time']
+    alert_k = request.form['alert_k']
+    alert_k_date = request.form['alert_k_date']
+    alert_k_time = request.form['alert_k_time']
+    alert_e = request.form['alert_e']
+    alert_e_date = request.form['alert_e_date']
+    alert_e_time = request.form['alert_e_time']
     memo = request.form['memo']
-    # startend = request.form['startend_fix']
-    # alert1_day = request.form['alert1_day_fix']
-    # alert1_time = request.form['alert1_time_fix']
-    # alert2_day = request.form['alert2_day_fix']
-    # alert2_time = request.form['alert2_time_fix']
-    db.todo.update_one({'_id': ObjectId(id)}, {'$set': {
+    db.todo.update_one({'_id': ObjectId(id), 'userID': userID}, {'$set': {
         'todo': todo,
         'start_date': start_date,
         'start_time': start_time,
         'end_date': end_date,
         'end_time': end_time,
+        'alert_k': alert_k,
+        'alert_k_date': alert_k_date,
+        'alert_k_time': alert_k_time,
+        'alert_e': alert_e,
+        'alert_e_date': alert_e_date,
+        'alert_e_time': alert_e_time,
         'memo': memo
     }})
     return jsonify({'result': 'success', 'msg': '수정된 스케줄을 저장했습니다. 멍!'})
@@ -250,10 +255,8 @@ def fix_sche():
 @app.route('/delsche', methods=['POST'])
 def del_sche():
     del_id = request.form['id']
-    print(del_id)
     db.todo.delete_one({"_id": ObjectId(del_id)})
     return dumps({'result': 'success', 'msg': '선택하신 일정이 삭제되었습니다. 멍!'})
-
 
 # 6. 알림 보내기 - schedule
 import schedule, time, datetime
@@ -261,12 +264,21 @@ from pprint import pprint
 
 ###알람체크함수 - 현재시간과 비교해 이메일, 카톡 알림시간 체크###
 def alert_send():
-    # 현재시간과 비교
+    # 현재시간과 비교 - 이메일
     now = datetime.datetime.now()
-    print(now)
-    todos = list(db.todo.find({}))
-    #fortodo in todos:
-
+    alert_e_list = list(db.todo.find({'alert_e': 'true'}))
+    for alert_e in alert_e_list:
+        alert_e_date = alert_e['alert_e_date']
+        alert_e_time = alert_e['alert_e_time']
+        todo = alert_e['todo']
+        alert_e_year = int(alert_e_date.split('-')[0])
+        alert_e_month = int(alert_e_date.split('-')[1])
+        alert_e_day = int(alert_e_date.split('-')[2])
+        alert_e_hour = int(alert_e_time.split(':')[0])
+        alert_e_minute = int(alert_e_time.split(':')[1])
+        alert_e_datetime = datetime.datetime(alert_e_year, alert_e_month, alert_e_day, alert_e_hour, alert_e_minute)
+        if (now - alert_e_datetime == 0):
+            send_email(todo)
 
 # 6-1. 이메일전송함수
 def send_email():
@@ -275,14 +287,14 @@ def send_email():
     from email.mime.text import MIMEText
 
     me = "doggo.and.mee@gmail.com"
-    my_password = "  "
+    my_password = " "
     you = "non_named@naver.com"
 
     ## 여기서부터 코드를 작성하세요.
     # 이메일 작성 form을 받아옵니다.
     msg = MIMEMultipart('alternative')
     # 제목을 입력합니다.
-    msg['Subject'] = "Alert"
+    msg['Subject'] = 'hello!'
     # 송신자를 입력합니다.
     msg['From'] = me
     # 수신자를 입력합니다.
@@ -311,19 +323,16 @@ def send_email():
 # 6-3. schedule로 1분마다 반복실행하며 설정한 시간에 알림 보내기
 def job():
     print("여기에 할 일을 넣기")
-    send_email()
-    #send_katalk()
+    alert_send()
 
 def run():
-    #schedule.every(60).seconds.do(job)
+    schedule.every(1).minutes.do(job)
     while True:
         schedule.run_pending()
 
 
 #if __name__ == "__main__":
 #    run()
-
-
 
 
 #job확인
