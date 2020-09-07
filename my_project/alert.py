@@ -23,6 +23,7 @@ def alert_send():
         alert_e_date = alert_e['alert_e_date']
         alert_e_time = alert_e['alert_e_time']
         todo = alert_e['todo']
+        userID = alert_e['userID']
         alert_e_year = int(alert_e_date.split('-')[0])
         alert_e_month = int(alert_e_date.split('-')[1])
         alert_e_day = int(alert_e_date.split('-')[2])
@@ -31,35 +32,49 @@ def alert_send():
         alert_e_datetime = datetime(alert_e_year, alert_e_month, alert_e_day, alert_e_hour, alert_e_minute)
         # 이메일알림시간 = 현재시간이면 메일 보냄
         if (alert_e_datetime == today_datetime):
-            print('알림시간이다!')
-            send_email(todo)
+            print('📧이메일 알림시간이다!')
+            send_email(todo, userID)
 
 # 6-1. 이메일전송함수
-def send_email(todo):
+def send_email(todo, userID):
     import smtplib
-    from email.mime.multipart import MIMEMultipart
+    from email import encoders  # 파일전송을 할 때 이미지나 문서 동영상 등의 파일을 문자열로 변환할 때 사용할 패키지
     from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.image import MIMEImage
 
     me = "doggo.and.mee@gmail.com"
     my_password = ""
-    you = "non_named@naver.com"
+    you = userID
 
     ## 여기서부터 코드를 작성하세요.
     # 이메일 작성 form을 받아옵니다.
     msg = MIMEMultipart('alternative')
     # 제목을 입력합니다.
-    msg['Subject'] = todo
+    msg['Subject'] = '🐶 멍! "'+todo+'" 알림이 왔어요!'
     # 송신자를 입력합니다.
     msg['From'] = me
     # 수신자를 입력합니다.
     msg['To'] = you
 
     # 이메일 내용을 작성합니다
-    html = '<html><body><p>Hi, I have the following alerts for you!</p></body></html>'
+    html = """
+        <html><body>
+        <h1>📧 '멍이와 나' 알림 메일 </h1>
+        <p>안녕하세요!</p><br>
+        <p>'멍이와 나(Doggo&Me)'에서 보낸 """\
+           + userID +"님의 일정,</p><br><p><span style='border:dotted 2px; margin:5px; padding:5px;'>'"\
+           + todo +"""'</span>에 대한 알림 메일입니다.</p><br>
+        <p>오늘의 일정 잊지 말아요!</p> 
+        <p>그럼 오늘도 행복한 하루 되세요. 멍멍🐕!</p><br>
+        -멍이 드림🐶-             
+        </body></html>
+        """
+
     # 이메일 내용의 타입을 지정합니다.
-    part2 = MIMEText(html, 'html')
+    text = MIMEText(html, 'html')
     # 이메일 form에 작성 내용을 입력합니다
-    msg.attach(part2)
+    msg.attach(text)
     ## 여기에서 코드 작성이 끝납니다.
 
     # Gmail 을 통해 전달할 것임을 표시합니다.
@@ -76,12 +91,11 @@ def send_email(todo):
 
 # 6-3. schedule로 1분마다 반복실행하며 사용자가 설정한 시간에 알림(메일/카톡) 보내기
 def job():
-
     alert_send()
     print("🐕일하고 있음!🐕")
 
 def run():
-    schedule.every(60).seconds.do(job)
+    schedule.every(50).seconds.do(job)
     while True:
         schedule.run_pending()
 

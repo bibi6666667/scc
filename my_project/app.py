@@ -61,6 +61,18 @@ def api_register():
 
     return jsonify({'result': 'success'})
 
+# 이메일 중복체크 API
+@app.route('/api/dplct_check', methods=['POST'])
+def dplct_check():
+    userID = request.form['userID']
+    dplct_val = list(db.user.find({'id': userID}))
+    print(dplct_val)
+    if dplct_val is not None:
+        return jsonify({'result': 'fail', 'fail_msg': '이미 가입된 이메일 주소입니다. 다른 이메일을 사용해 주세요!'})
+    elif dplct_val == '[]':
+        return jsonify({'result': 'success', 'success_msg': '사용 가능한 이메일 주소입니다!'})
+
+
 # [로그인 API]
 # id, pw를 받아서 맞춰보고, 토큰을 만들어 발급합니다.
 @app.route('/api/login', methods=['POST'])
@@ -117,7 +129,7 @@ def api_valid():
         return jsonify({'result': 'success', 'id': userinfo['id'], 'nickname': userinfo['nick']})
     except jwt.ExpiredSignatureError:
         # 위를 실행했는데 만료시간이 지났으면 에러가 납니다.
-        return jsonify({'result': 'fail', 'msg': '로그인 유지시간(30분)이 만료되었어요. 다시 로그인 해 주세요!🐕'})
+        return jsonify({'result': 'fail', 'msg': '🐕로그인 유지시간(30분)이 만료되었어요. 다시 로그인 해 주세요!'})
 
 ################
 #로그인 데코레이터#
@@ -185,7 +197,7 @@ def make_sche():
         'memo': memo
     }
     db.todo.insert_one(doc)
-    return jsonify({'result': 'success', 'msg': '작성하신 대로 스케줄을 저장했습니다. 멍!'})
+    return jsonify({'result': 'success', 'msg': '🐕작성하신 대로 스케줄을 저장했습니다. 멍!'})
 
 
 # 2. 일정 조회(Read) - /readsche (GET)
@@ -194,7 +206,7 @@ def make_sche():
 def read_sche():
     userID = g.user_id
     sche_list = list(db.todo.find({'userID': userID}))
-    return dumps({'result': 'success', 'sche_list': sche_list, 'msg': '일정을 불러왔습니다. 멍!'})
+    return dumps({'result': 'success', 'sche_list': sche_list, 'msg': '🐕일정을 불러왔습니다. 멍!'})
 
 
 # 3. 일정 검색(Read?) - /findsche (POST)
@@ -203,7 +215,7 @@ def read_sche():
 def find_sche():
     userID = g.user_id
     keyword = request.form['keyword']
-    searched = list(db.todo.find({'todo': keyword, 'userID': userID}))
+    searched = list(db.todo.find({'todo': {'$regex':keyword}, 'userID': userID}))
     return dumps({'result': 'success', 'searched': searched, 'msg': '검색 완료!'})
 
 
@@ -249,14 +261,14 @@ def fix_sche():
         'alert_e_time': alert_e_time,
         'memo': memo
     }})
-    return jsonify({'result': 'success', 'msg': '수정된 스케줄을 저장했습니다. 멍!'})
+    return jsonify({'result': 'success', 'msg': '🐕수정된 스케줄을 저장했습니다. 멍!'})
 
 # 5. 일정 삭제(Delete) - /delsche(POST)
 @app.route('/delsche', methods=['POST'])
 def del_sche():
     del_id = request.form['id']
     db.todo.delete_one({"_id": ObjectId(del_id)})
-    return dumps({'result': 'success', 'msg': '선택하신 일정이 삭제되었습니다. 멍!'})
+    return dumps({'result': 'success', 'msg': '🐕선택하신 일정이 삭제되었습니다. 멍!'})
 
 # 6. 알림 보내기 - schedule -> alert.py에!
 ###알람체크함수 - 현재시간과 비교해 이메일, 카톡 알림시간 체크###

@@ -70,6 +70,11 @@
             }
         }
 
+        function enterkey() {
+            if (window.event.keyCode == 13) {
+                login();
+            }
+        }
     </script>
 
 </head>
@@ -86,7 +91,7 @@
     <br>
     <div class="PW_area">
         <label for="userpw">비밀번호(pw)</label><br>
-        <input type="password" id="userpw" placeholder="비밀번호를 입력해 주세요">
+        <input type="password" id="userpw" onkeyup="enterkey()" placeholder="비밀번호를 입력해 주세요">
     </div>
     <br>
     <button onclick="login()" style="font-weight: bold">🐕로그인!</button>

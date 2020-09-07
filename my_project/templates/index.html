@@ -73,7 +73,7 @@
             margin: 30px;
         }
 
-        #header_info, #input_schedule {
+        #header_info, #input_sche {
             border: dashed black 1px;
             padding: 15px;
             margin: 10px;
@@ -88,7 +88,7 @@
             font-size: 30px;
         }
 
-        #input_schedule {
+        #input_sche, #alert_k_input, #alert_e_input {
             display: none;
         }
 
@@ -139,9 +139,13 @@
         //////로그아웃 영역//////
         // 로그아웃은 내가 가지고 있는 토큰만 쿠키에서 없애면 됩니다.
         function logout() {
-            $.removeCookie('mytoken');
-            alert('로그아웃 되었습니다! 또 찾아와 주세요🐶')
-            window.location.href = '/'
+            if (confirm("🐶 로그아웃 하시겠어요?")) {
+                $.removeCookie('mytoken');
+                alert('로그아웃 되었습니다! 또 찾아와 주세요🐕')
+                window.location.href = '/'
+            } else {
+                alert('🐶로그아웃을 취소했습니다! 아직 로그인 상태에요.')
+            }
         }
 
         function show_month() {
@@ -178,11 +182,30 @@
             }
         }
 
-        function open_close() {
-            if ($('#input_schedule').css('display') == 'block') {
-                $('#input_schedule').hide();
+        function click_open() {
+            if ($('#input_sche').css('display') == 'block') {
+                $('#input_sche').hide();
             } else {
-                $('#input_schedule').show();
+                $('#input_sche').show();
+            }
+        }
+
+        function check_open() {
+            if ($('input:checkbox[id="alert_k"]').is(':checked')) {
+                $('#alert_k_input').show();
+            } else {
+                $('#alert_k_input').hide();
+            }
+            if ($('input:checkbox[id="alert_e"]').is(':checked')) {
+                $('#alert_e_input').show();
+            } else {
+                $('#alert_e_input').hide();
+            }
+        }
+
+        function enterkey() {
+            if (window.event.keyCode == 13) {
+                find_sche();
             }
         }
 
@@ -204,21 +227,31 @@
             $('#month_layout').show();
         }
 
-        ////////////API 역할을 하는 부분
+        //////////////////////
+        //API 역할을 하는 부분//
+        //////////////////////
         //1. 일정 생성(Create) - /makesche (POST)
         function makesche() {
             if ($('#todo').val() == 0 || $('#start_date').val() == 0) {
-                alert("멍! 할 일과 시작일이 있어야 일정을 저장할 수 있어요!")
+                alert("🐶멍! 할 일과 시작일이 있어야 일정을 저장할 수 있어요!")
+            } else if ($('input:checkbox[id="alert_k"]').is(':checked') && $('#alert_k_date').val() == 0) {
+                alert('🐶 💬카카오톡 알림을 드릴까요? 알림 날짜를 지정해 주세요!')
+            } else if ($('input:checkbox[id="alert_k"]').is(':checked') && $('#alert_k_time').val() == 0) {
+                alert('🐶 💬카카오톡 알림을 드릴까요? 알림 시간도 지정해 주세요!')
+            } else if ($('input:checkbox[id="alert_e"]').is(':checked') && $('#alert_e_date').val() == 0) {
+                alert('🐶 📧이메일 알림을 드릴까요? 알림 날짜를 지정해 주세요!')
+            } else if ($('input:checkbox[id="alert_e"]').is(':checked') && $('#alert_e_time').val() == 0) {
+                alert('🐶 📧이메일 알림을 드릴까요? 알림 시간도 지정해 주세요!')
             } else {
                 let todo = $('#todo').val();
                 let start_date = $('#start_date').val();
                 let start_time = $('#start_time').val();
                 let end_date = $('#end_date').val();
                 let end_time = $('#end_time').val();
-                let alert_k = $('input:checkbox[id="alert_k_fix"]').is(':checked');
+                let alert_k = $('input:checkbox[id="alert_k"]').is(':checked');
                 let alert_k_date = $('#alert_k_date').val();
                 let alert_k_time = $('#alert_k_time').val();
-                let alert_e = $('input:checkbox[id="alert_e_fix"]').is(':checked');
+                let alert_e = $('input:checkbox[id="alert_e"]').is(':checked');
                 let alert_e_date = $('#alert_e_date').val();
                 let alert_e_time = $('#alert_e_time').val();
                 let memo = $('#memo').val();
@@ -323,7 +356,7 @@
 
 
         //3. 일정 검색(Read?) - /findsche (POST)
-        function find_sche(todo) {
+        function find_sche() {
             $('#day_layout').empty();
             let keyword = $('#search').val();
             $.ajax({
@@ -427,7 +460,6 @@
                         let fix_todo = response["fix_todo"];
                         let alert_k = fix_todo['alert_k']
                         let alert_e = fix_todo['alert_e']
-
                         if (alert_k == "true") {
                             $('#alert_k_fix').attr('checked', true);
                         } else if (alert_k == "false") {
@@ -490,26 +522,29 @@
 
         //5. 일정 삭제(Delete) - /delsche(POST)
         function delsche(e) {
-            let sche_card = $(e).parent();
-            let id = sche_card.attr('data-id');
-            $.ajax({
-                type: "POST",
-                url: "/delsche",
-                data: {'id': id},
-                success: function (response) {
-                    response = JSON.parse(response)
-                    if (response["result"] == "success") {
-                        alert(response["msg"]);
-                        window.location.reload();
-                    } else {
-                        alert('서버 오류!')
+            if (confirm("🐶 이 일정을 정말 삭제할까요?")) {
+                let sche_card = $(e).parent();
+                let id = sche_card.attr('data-id');
+                $.ajax({
+                    type: "POST",
+                    url: "/delsche",
+                    data: {'id': id},
+                    success: function (response) {
+                        response = JSON.parse(response)
+                        if (response["result"] == "success") {
+                            alert(response["msg"]);
+                            window.location.reload();
+                        } else {
+                            alert('서버 오류!')
+                        }
                     }
-                }
-            })
+                })
+            } else {
+                alert('삭제를 취소했습니다!')
+            }
         }
 
-        //6. 알림 보내기(카톡/이메일)
-        ///////////위의 것들 다 했다면
+        //6. 알림 보내기(카톡/이메일) -> alert.py 파일로.
         //7. 날씨 조회 /weather (GET)
 
     </script>
@@ -538,10 +573,10 @@
         <br>
         <button onclick="logout()">로그아웃!👋</button>
         <br><br>
-        <button onclick="open_close()" id="btn-new-sche" type="button">일정을 적어주세요📝
+        <button onclick="click_open()" id="btn-new-sche" type="button">일정을 적어주세요📝
         </button>
         <br>
-        <div id="input_schedule">
+        <div id="input_sche">
             <h3>📝어떤 일정을 적어둘까요?</h3><br>
             <input type="text" width="300px" id="todo" placeholder="멍멍! 할 일이 뭔가요?"><br><br>
             언제부터 해야 하나요?(시작일)<br>
@@ -549,12 +584,16 @@
             언제까지 해야 하나요?(종료일)<br>
             <input type="date" id="end_date"><input type="time" id="end_time"><br>
             <h3>✅잊지 않게 알려드릴게요!</h3><br>
-            💬카카오톡 메시지로 알려줘 <input type="checkbox" id="alert_k"><br>
-            <input type="date" id="alert_k_date">
-            <input type="time" id="alert_k_time"><br><br>
-            📧이메일을 보내서 알려줘 <input type="checkbox" id="alert_e"><br>
-            <input type="date" id="alert_e_date">
-            <input type="time" id="alert_e_time"><br><br>
+            💬카카오톡 메시지로 알려줘 <input type="checkbox" id="alert_k" onclick="check_open()"><br><br>
+            <div id="alert_k_input">
+                <input type="date" id="alert_k_date">
+                <input type="time" id="alert_k_time"><br><br>
+            </div>
+            📧이메일을 보내서 알려줘 <input type="checkbox" id="alert_e" onclick="check_open()"><br><br>
+            <div id="alert_e_input">
+                <input type="date" id="alert_e_date">
+                <input type="time" id="alert_e_time"><br><br>
+            </div>
             <textarea id="memo" placeholder="메모를 더 남길 수 있어요. 멍!" cols="30" rows="5"></textarea><br><br>
             <input type="submit" onclick="makesche()" value="저장!🐾">
         </div>
@@ -568,7 +607,7 @@
     <div id="schedules">
         <div id="month"></div>
         <br>
-        <input id="search" type="text" placeholder="일정을 검색할 수 있어요. 멍!">
+        <input id="search" type="text" onkeyup="enterkey()" placeholder="일정을 검색할 수 있어요. 멍!">
         <button onclick="find_sche()">🔍</button>
         <div id="day_layout">
             <div class="sche_card" data-id="${a_sche['_id']['$oid']}">

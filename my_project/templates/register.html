@@ -49,19 +49,29 @@
             }
         }
 
-        /*function dplct_check() {
+        function dplct_check(result) {
             let userID = $('#userid').val()
             $.ajax({
                 type: "POST",
                 url: "/api/dplct_check",
                 data: {'userID': userID },
                 success: function (response) {
-
+                    if (response['result'] == 'success'){
+                        alert(response['success_msg'])
+                        let result = 'success'
+                        return result
+                    } else if (response['result'] == 'fail') {
+                        alert(response['fail_msg'])
+                    }
                 }
             })
-        }*/
+        }
 
         function register() {
+            {#dplct_check(result)#}
+            {#if (dplct_check(result) != 'success'){#}
+            {#    '아이디 중복검사를 먼저 해 주세요!'#}
+            {# }else #}
             if ($('#userid').val() == 0 || $('#userpw').val() == 0 || $('#usernick').val() == 0) {
                 alert("아이디(이메일), 비밀번호, 닉네임을 모두 입력해 주세요!")
             } else {
@@ -82,7 +92,6 @@
                         }
                     }
                 })
-                dplct_check()
             }
         }
     </script>
@@ -97,7 +106,7 @@
         <label for="userid">아이디(id : email)</label><br>
         <input type="email" id="userid" aria-describedby="emailHelp"
                placeholder="아이디(이메일 형식)를 입력해 주세요."><br>
-        <button onclick="dplct_check()">아이디 중복검사🔍</button>
+        {# <button onclick="dplct_check()">아이디 중복검사🔍</button>#}
         <p class="info">🐶자주 사용하는 이메일 주소를 아이디로 입력해 주세요.</p>
         <p class="info">아이디로 입력한 이메일은 일정 알림을 받을 때도 활용됩니다!</p>
     </div>
