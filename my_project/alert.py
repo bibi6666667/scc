@@ -32,7 +32,7 @@ def alert_send():
         alert_e_datetime = datetime(alert_e_year, alert_e_month, alert_e_day, alert_e_hour, alert_e_minute)
         # 이메일알림시간 = 현재시간이면 메일 보냄
         if (alert_e_datetime == today_datetime):
-            print('📧이메일 알림시간이다!')
+            print('📧이메일 알림시간!')
             send_email(todo, userID)
 
 # 6-1. 이메일전송함수

@@ -45,6 +45,15 @@ def register():
 ###################
 # 로그인을 위한 API #
 ###################
+# 이메일 중복체크 API
+@app.route('/api/dplct_check', methods=['POST'])
+def dplct_check():
+    userID = request.form['userID']
+    dplct_val = list(db.user.find({'id': userID}))
+    if len(dplct_val) == 1:
+        return jsonify({'result': 'fail', 'msg_fail': '이미 가입된 이메일 주소입니다. 다른 이메일을 사용해 주세요!'})
+    elif len(dplct_val) == 0:
+        return jsonify({'result': 'success', 'msg_success': '사용 가능한 이메일 주소입니다!'})
 
 # [회원가입 API]
 # id, pw, nickname을 받아서, mongoDB에 저장합니다.
@@ -59,18 +68,7 @@ def api_register():
 
     db.user.insert_one({'id': id_receive, 'pw': pw_hash, 'nick': nickname_receive})
 
-    return jsonify({'result': 'success'})
-
-# 이메일 중복체크 API
-@app.route('/api/dplct_check', methods=['POST'])
-def dplct_check():
-    userID = request.form['userID']
-    dplct_val = list(db.user.find({'id': userID}))
-    print(dplct_val)
-    if dplct_val is not None:
-        return jsonify({'result': 'fail', 'fail_msg': '이미 가입된 이메일 주소입니다. 다른 이메일을 사용해 주세요!'})
-    elif dplct_val == '[]':
-        return jsonify({'result': 'success', 'success_msg': '사용 가능한 이메일 주소입니다!'})
+    return jsonify({'result': 'success', 'msg': '회원가입이 완료되었습니다. 이제 로그인을 해 주세요!'})
 
 
 # [로그인 API]
@@ -101,7 +99,7 @@ def api_login():
         return jsonify({'result': 'success', 'token': token})
     # 찾지 못하면
     else:
-        return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다. 확인해 주세요🤔'})
+        return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않거나, 존재하지 않는 회원입니다. 확인해 주세요🤔'})
 
 
 # [유저 정보 확인 API]
@@ -151,12 +149,12 @@ def login_required(f):
             except jwt.InvalidTokenError:
                 payload = None
             if payload is None:
-                return jsonify({'result': 'fail', 'msg':'아이디/비밀번호가 일치하지 않습니다. 확인해 주세요🤔'})
+                return jsonify({'result': 'fail', 'msg':'아이디/비밀번호가 일치하지 않거나, 존재하지 않는 회원입니다. 확인해 주세요🤔'})
             user_id = payload["id"]
             g.user_id = user_id
             g.user = db.user.find_one({'id': user_id}, {'_id': 0}) if user_id else None
         else:
-            return jsonify({'result': 'fail', 'msg':'아이디/비밀번호가 일치하지 않습니다. 확인해 주세요🤔'})
+            return jsonify({'result': 'fail', 'msg':'아이디/비밀번호가 일치하지 않거나, 존재하지 않는 회원입니다. 확인해 주세요🤔'})
         return f(*args, **kwargs)
     return decorated_function
 

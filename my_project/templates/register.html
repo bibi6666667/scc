@@ -38,61 +38,52 @@
         }
     </style>
     <script>
-        // 간단한 회원가입 함수입니다.
-        // 아이디, 비밀번호, 닉네임을 받아 DB에 저장합니다.
         function email_check() {
             let id_val = $('#userid').val();
-            if (id_val.includes('@' && '.')){
-                register()
+            if (id_val == 0 || $('#userpw').val() == 0 || $('#usernick').val() == 0) {
+                alert("🐶아이디(이메일), 비밀번호, 닉네임을 모두 입력해 주세요!")
+            } else if (id_val.includes('@' && '.')) {
+                dplct_check()
             } else {
-                alert("아이디는 이메일 형식으로 입력해 주세요!")
+                alert("🐶아이디는 이메일 형식으로 입력해 주세요!")
             }
         }
 
-        function dplct_check(result) {
+        function dplct_check() {
             let userID = $('#userid').val()
             $.ajax({
                 type: "POST",
                 url: "/api/dplct_check",
-                data: {'userID': userID },
+                data: {'userID': userID},
                 success: function (response) {
-                    if (response['result'] == 'success'){
-                        alert(response['success_msg'])
-                        let result = 'success'
-                        return result
+                    if (response['result'] == 'success') {
+                        alert(response['msg_success'])
+                        register()
                     } else if (response['result'] == 'fail') {
-                        alert(response['fail_msg'])
+                        alert(response['msg_fail'])
                     }
                 }
             })
         }
 
+        // 간단한 회원가입 함수입니다.
+        // 아이디, 비밀번호, 닉네임을 받아 DB에 저장합니다.
         function register() {
-            {#dplct_check(result)#}
-            {#if (dplct_check(result) != 'success'){#}
-            {#    '아이디 중복검사를 먼저 해 주세요!'#}
-            {# }else #}
-            if ($('#userid').val() == 0 || $('#userpw').val() == 0 || $('#usernick').val() == 0) {
-                alert("아이디(이메일), 비밀번호, 닉네임을 모두 입력해 주세요!")
-            } else {
-                $.ajax({
-                    type: "POST",
-                    url: "/api/register",
-                    data: {
-                        id_give: $('#userid').val(),
-                        pw_give: $('#userpw').val(),
-                        nickname_give: $('#usernick').val()
-                    },
-                    success: function (response) {
-                        if (response['result'] == 'success') {
-                            alert('회원가입이 완료되었습니다. 이제 로그인을 해 주세요!')
-                            window.location.href = '/login'
-                        } else {
-                            alert(response['msg'])
-                        }
+            $.ajax({
+                type: "POST",
+                url: "/api/register",
+                data: {
+                    id_give: $('#userid').val(),
+                    pw_give: $('#userpw').val(),
+                    nickname_give: $('#usernick').val()
+                },
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        alert(response['msg'])
+                        window.location.href = '/login'
                     }
-                })
-            }
+                }
+            })
         }
     </script>
 </head>
@@ -106,7 +97,7 @@
         <label for="userid">아이디(id : email)</label><br>
         <input type="email" id="userid" aria-describedby="emailHelp"
                placeholder="아이디(이메일 형식)를 입력해 주세요."><br>
-        {# <button onclick="dplct_check()">아이디 중복검사🔍</button>#}
+        {#<button onclick="dplct_check()">아이디 중복검사🔍</button>#}
         <p class="info">🐶자주 사용하는 이메일 주소를 아이디로 입력해 주세요.</p>
         <p class="info">아이디로 입력한 이메일은 일정 알림을 받을 때도 활용됩니다!</p>
     </div>
