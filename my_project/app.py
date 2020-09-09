@@ -1,3 +1,7 @@
+from pymongo import MongoClient
+client = MongoClient('localhost',27017)
+db = client.dbsparta
+
 from bson.json_util import dumps
 from bson.objectid import ObjectId
 from flask import Flask, render_template, jsonify, request, session, redirect, url_for
@@ -6,13 +10,9 @@ from flask import g
 
 app = Flask(__name__)
 
-from pymongo import MongoClient
-client = MongoClient('localhost',27017)
-db = client.dbsparta
-
 # JWT 토큰을 만들 때 필요한 비밀문자열입니다. 아무거나 입력해도 괜찮습니다.
 # 이 문자열은 서버만 알고있기 때문에, 내 서버에서만 토큰을 인코딩(=만들기)/디코딩(=풀기) 할 수 있습니다.
-SECRET_KEY = 'apple'
+SECRET_KEY = 'DDoGGo'
 
 # JWT 패키지를 사용합니다. (설치해야할 패키지 이름: PyJWT)
 import jwt

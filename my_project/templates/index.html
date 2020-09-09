@@ -602,33 +602,11 @@
             🐶 <span id="nickname"></span>(<span id="userID"></span>)님, 반가워요!<br>
             오늘은 <span id="date"></span>, <span id="day"></span>이에요. 멍멍!<br><br>
             <button onclick="logout()">로그아웃!👋</button>
-        </div>
-        <button onclick="fold_mobile_info()">Tip : 📲모바일 알림 받기!</button><br><br>
-        <div id="mobile_info">
-            <p>🐕'멍이와 나'에 가입한 아이디(이메일 주소)를 활용해<br>
-            스마트폰에서 모바일 알림을 받을 수 있어요!<br>
-                (단, 스마트폰에서 push알림을 설정해 주어야 해요!)</p>
-            <p>✉카카오 메일(@kakao.com) <br>- 연결된 카카오톡 계정으로 💬카톡 알림이 와요.</p>
-            <p>✉네이버 메일(@naver.com) <br>- '네이버 메일' 모바일 앱을 설치해야 해요.<br>
-            📱<a href="https://play.google.com/store/apps/details?id=com.nhn.android.mail&hl=ko"
-                 title="구글 플레이스토어의 '네이버 메일'앱 설치 링크입니다(Android 환경)">안드로이드</a>
-            / <a href="https://apps.apple.com/kr/app/%EB%84%A4%EC%9D%B4%EB%B2%84-%EB%A9%94%EC%9D%BC/id582152066"
-                 title="애플 앱스토어의 '네이버 메일'앱 설치 링크입니다(iOS환경)">iOS</a></p>
-            <p>✉다음 메일(한메일: @hanmail.net) <br>- '다음 메일' 모바일 앱을 설치해야 해요.<br>
-            📱<a href="https://play.google.com/store/apps/details?id=net.daum.android.mail&hl=ko"
-                 title="구글 플레이스토어의 '다음 메일'앱 설치 링크입니다(Android 환경)">안드로이드</a>
-            / <a href="https://apps.apple.com/kr/app/%EB%8B%A4%EC%9D%8C-%EB%A9%94%EC%9D%BC-daum-mail/id1455817344"
-                 title="애플 앱스토어의 '다음 메일'앱 설치 링크입니다(iOS환경)">iOS</a></p>
-            <p>✉구글 메일(Gmail: @gmail.com) <br>- 'Gmail' 모바일 앱을 설치해야 해요.<br>
-            📱<a href="https://play.google.com/store/apps/details?id=com.google.android.gm&hl=ko"
-                 title="구글 플레이스토어의 '구글 메일Gmail'앱 설치 링크입니다(Android 환경)">안드로이드</a>
-            / <a href="https://apps.apple.com/kr/app/gmail-google-%EC%9D%B4%EB%A9%94%EC%9D%BC/id422689480"
-                 title="애플 앱스토어의 '구글 메일Gmail'앱 설치 링크입니다(iOS환경)">iOS</a></p>
-        </div>
-        <button onclick="fold_input_sche()">일정을 적어보세요📝</button><br><br>
+        </div><br>
+        <button onclick="fold_input_sche()">일정을 적어보세요📝</button><br>
         <div id="input_sche">
             <h4>📝어떤 일정을 적어둘까요?</h4><br>
-            <input type="text" width="300px" id="todo" placeholder="🐶할 일이 뭔가요?"><br><br>
+            <input type="text" width="300px" id="todo" placeholder="할 일이 뭔가요?"><br><br>
             언제부터 해야 하나요?(시작일)<br>
             <input type="date" id="start_date"><input type="time" id="start_time"> <br><br>
             언제까지 해야 하나요?(종료일)<br>
@@ -647,6 +625,28 @@
             <textarea id="memo" placeholder="메모를 더 남길 수 있어요. 멍!" cols="30" rows="5"></textarea><br><br>
             <input type="submit" onclick="makesche()" value="저장!🐾">
         </div><br>
+        <button onclick="fold_mobile_info()">Tip : 📲모바일 알림 받기!</button><br>
+        <div id="mobile_info">
+            <p>🐕'멍이와 나'에 가입한 아이디(이메일 주소)를 활용해<br>
+            스마트폰에서 모바일 알림을 받을 수 있어요!<br>
+                (단, 스마트폰에서 push알림을 설정해 주어야 해요!)</p>
+            <p>✉카카오 메일(@kakao.com) <br>- 연결된 카카오톡 계정으로 💬카톡 알림이 와요.</p>
+            <p>✉네이버 메일(@naver.com) <br>- '네이버 메일' 모바일 앱을 설치해야 해요.<br>
+            📱<a href="https://play.google.com/store/apps/details?id=com.nhn.android.mail&hl=ko"
+                 title="구글 플레이스토어의 '네이버 메일'앱 설치 링크입니다(Android 환경)" target="_blank">안드로이드</a>
+            / <a href="https://apps.apple.com/kr/app/%EB%84%A4%EC%9D%B4%EB%B2%84-%EB%A9%94%EC%9D%BC/id582152066"
+                 title="애플 앱스토어의 '네이버 메일'앱 설치 링크입니다(iOS환경)" target="_blank">iOS</a></p>
+            <p>✉다음 메일(한메일: @hanmail.net) <br>- '다음 메일' 모바일 앱을 설치해야 해요.<br>
+            📱<a href="https://play.google.com/store/apps/details?id=net.daum.android.mail&hl=ko"
+                 title="구글 플레이스토어의 '다음 메일'앱 설치 링크입니다(Android 환경)" target="_blank">안드로이드</a>
+            / <a href="https://apps.apple.com/kr/app/%EB%8B%A4%EC%9D%8C-%EB%A9%94%EC%9D%BC-daum-mail/id1455817344"
+                 title="애플 앱스토어의 '다음 메일'앱 설치 링크입니다(iOS환경)" target="_blank">iOS</a></p>
+            <p>✉구글 메일(Gmail: @gmail.com) <br>- 'Gmail' 모바일 앱을 설치해야 해요.<br>
+            📱<a href="https://play.google.com/store/apps/details?id=com.google.android.gm&hl=ko"
+                 title="구글 플레이스토어의 '구글 메일Gmail'앱 설치 링크입니다(Android 환경)" target="_blank">안드로이드</a>
+            / <a href="https://apps.apple.com/kr/app/gmail-google-%EC%9D%B4%EB%A9%94%EC%9D%BC/id422689480"
+                 title="애플 앱스토어의 '구글 메일Gmail'앱 설치 링크입니다(iOS환경)" target="_blank">iOS</a></p>
+        </div>
         <div id="layout_buttons">
             <a href="#" onclick="show_1day()"><img class="icon" src="../static/calendar_1.png" alt="1일 레이아웃 아이콘"></a>
             <a href="#" onclick="show_7day()"><img class="icon" src="../static/calendar_7.png" alt="7일 레이아웃 아이콘"></a>

@@ -121,7 +121,7 @@ def job():
     print("🐕일하고 있음!🐕")
 
 def run():
-    schedule.every(40).seconds.do(job)
+    schedule.every(50).seconds.do(job)
     while True:
         schedule.run_pending()
 
