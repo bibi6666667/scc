@@ -7,8 +7,8 @@ import schedule, time, datetime
 from pprint import pprint
 from datetime import datetime
 
-###알람체크함수 - 현재시간과 비교해 이메일, 카톡 알림시간 체크###
-def alert_send():
+# 6-1. 📧alert1 체크함수 - 현재시간과 비교해 이메일 알림시간 체크###
+def alert1_send():
     # 현재시간
     year = datetime.today().year
     month = datetime.today().month
@@ -17,25 +17,53 @@ def alert_send():
     minute = datetime.today().minute
     today_datetime = datetime(year, month, day, hour, minute)
     print(today_datetime)
-    # 이메일 알림시간 가져오기
-    alert_e_list = list(db.todo.find({'alert_e': 'true'}))
-    for alert_e in alert_e_list:
-        alert_e_date = alert_e['alert_e_date']
-        alert_e_time = alert_e['alert_e_time']
-        todo = alert_e['todo']
-        userID = alert_e['userID']
-        alert_e_year = int(alert_e_date.split('-')[0])
-        alert_e_month = int(alert_e_date.split('-')[1])
-        alert_e_day = int(alert_e_date.split('-')[2])
-        alert_e_hour = int(alert_e_time.split(':')[0])
-        alert_e_minute = int(alert_e_time.split(':')[1])
-        alert_e_datetime = datetime(alert_e_year, alert_e_month, alert_e_day, alert_e_hour, alert_e_minute)
+    # 이메일 알림 (1) - 날짜,시간 가져오기
+    alert1list = list(db.todo.find({'alert1': 'true'}))
+    for alert1 in alert1list:
+        alert1date = alert1['alert1date']
+        alert1time = alert1['alert1time']
+        todo = alert1['todo']
+        userID = alert1['userID']
+        alert1year = int(alert1date.split('-')[0])
+        alert1month = int(alert1date.split('-')[1])
+        alert1day = int(alert1date.split('-')[2])
+        alert1hour = int(alert1time.split(':')[0])
+        alert1minute = int(alert1time.split(':')[1])
+        alert1datetime = datetime(alert1year, alert1month, alert1day, alert1hour, alert1minute)
         # 이메일알림시간 = 현재시간이면 메일 보냄
-        if (alert_e_datetime == today_datetime):
-            print('📧이메일 알림시간!')
+        if (alert1datetime == today_datetime):
+            print('📧이메일 알림(1) 보낼 시간!')
             send_email(todo, userID)
 
-# 6-1. 이메일전송함수
+# 6-2. 📧📧alert2 체크함수 - 현재시간과 비교해 이메일 알림시간 체크###
+def alert2_send():
+    # 현재시간
+    year = datetime.today().year
+    month = datetime.today().month
+    day = datetime.today().day
+    hour = datetime.today().hour
+    minute = datetime.today().minute
+    today_datetime = datetime(year, month, day, hour, minute)
+    print(today_datetime)
+    # 이메일 알림 (2) - 날짜,시간 가져오기
+    alert2list = list(db.todo.find({'alert2': 'true'}))
+    for alert2 in alert2list:
+        alert2date = alert2['alert2date']
+        alert2time = alert2['alert2time']
+        todo = alert2['todo']
+        userID = alert2['userID']
+        alert2year = int(alert2date.split('-')[0])
+        alert2month = int(alert2date.split('-')[1])
+        alert2day = int(alert2date.split('-')[2])
+        alert2hour = int(alert2time.split(':')[0])
+        alert2minute = int(alert2time.split(':')[1])
+        alert2datetime = datetime(alert2year, alert2month, alert2day, alert2hour, alert2minute)
+        # 이메일알림시간 = 현재시간이면 메일 보냄
+        if (alert2datetime == today_datetime):
+            print('📧📧이메일 알림(2) 보낼 시간!')
+            send_email(todo, userID)
+
+# 6-3. 이메일전송함수
 def send_email(todo, userID):
     import smtplib
     from email import encoders  # 파일전송을 할 때 이미지나 문서 동영상 등의 파일을 문자열로 변환할 때 사용할 패키지
@@ -86,16 +114,14 @@ def send_email(todo, userID):
     # 메일보내기 프로그램을 종료합니다.
     s.quit()
 
-# 6-2. 카톡 메시지전송 함수
-#def send_katalk():
-
-# 6-3. schedule로 1분마다 반복실행하며 사용자가 설정한 시간에 알림(메일/카톡) 보내기
+# 6-4. schedule로 1분마다 반복실행하며 사용자가 설정한 시간에 알림(메일/카톡) 보내기
 def job():
-    alert_send()
+    alert1_send()
+    alert2_send()
     print("🐕일하고 있음!🐕")
 
 def run():
-    schedule.every(50).seconds.do(job)
+    schedule.every(40).seconds.do(job)
     while True:
         schedule.run_pending()
 

@@ -172,12 +172,12 @@ def make_sche():
     start_time = request.form['start_time']
     end_date = request.form['end_date']
     end_time = request.form['end_time']
-    alert_k = request.form['alert_k']
-    alert_k_date = request.form['alert_k_date']
-    alert_k_time = request.form['alert_k_time']
-    alert_e = request.form['alert_e']
-    alert_e_date = request.form['alert_e_date']
-    alert_e_time = request.form['alert_e_time']
+    alert1 = request.form['alert1']
+    alert1date = request.form['alert1date']
+    alert1time = request.form['alert1time']
+    alert2 = request.form['alert2']
+    alert2date = request.form['alert2date']
+    alert2time = request.form['alert2time']
     memo = request.form['memo']
     doc = {
         'userID': userID,
@@ -186,12 +186,12 @@ def make_sche():
         'start_time': start_time,
         'end_date': end_date,
         'end_time': end_time,
-        'alert_k': alert_k,
-        'alert_k_date' : alert_k_date,
-        'alert_k_time': alert_k_time,
-        'alert_e': alert_e,
-        'alert_e_date' : alert_e_date,
-        'alert_e_time': alert_e_time,
+        'alert1': alert1,
+        'alert1date' : alert1date,
+        'alert1time': alert1time,
+        'alert2': alert2,
+        'alert2date': alert2date,
+        'alert2time': alert2time,
         'memo': memo
     }
     db.todo.insert_one(doc)
@@ -214,7 +214,7 @@ def find_sche():
     userID = g.user_id
     keyword = request.form['keyword']
     searched = list(db.todo.find({'todo': {'$regex':keyword}, 'userID': userID}))
-    return dumps({'result': 'success', 'searched': searched, 'msg': '검색 완료!'})
+    return dumps({'result': 'success', 'searched': searched, 'msg': '🔍검색 완료!'})
 
 
 # 4-1. 일정 변경을 위한 조회(find-one) - /readasche (GET)
@@ -238,12 +238,12 @@ def fix_sche():
     start_time = request.form['start_time']
     end_date = request.form['end_date']
     end_time = request.form['end_time']
-    alert_k = request.form['alert_k']
-    alert_k_date = request.form['alert_k_date']
-    alert_k_time = request.form['alert_k_time']
-    alert_e = request.form['alert_e']
-    alert_e_date = request.form['alert_e_date']
-    alert_e_time = request.form['alert_e_time']
+    alert1 = request.form['alert1']
+    alert1date = request.form['alert1date']
+    alert1time = request.form['alert1time']
+    alert2 = request.form['alert2']
+    alert2date = request.form['alert2date']
+    alert2time = request.form['alert2time']
     memo = request.form['memo']
     db.todo.update_one({'_id': ObjectId(id), 'userID': userID}, {'$set': {
         'todo': todo,
@@ -251,12 +251,12 @@ def fix_sche():
         'start_time': start_time,
         'end_date': end_date,
         'end_time': end_time,
-        'alert_k': alert_k,
-        'alert_k_date': alert_k_date,
-        'alert_k_time': alert_k_time,
-        'alert_e': alert_e,
-        'alert_e_date': alert_e_date,
-        'alert_e_time': alert_e_time,
+        'alert1': alert1,
+        'alert1date': alert1date,
+        'alert1time': alert1time,
+        'alert2': alert2,
+        'alert2date': alert2date,
+        'alert2time': alert2time,
         'memo': memo
     }})
     return jsonify({'result': 'success', 'msg': '🐕수정된 스케줄을 저장했습니다. 멍!'})

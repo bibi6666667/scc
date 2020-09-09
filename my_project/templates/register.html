@@ -94,22 +94,48 @@
     <h1>멍이와 나</h1>
     <h3>- 회원가입 페이지 -</h3><br>
     <div class="ID_area">
-        <label for="userid">아이디(id : email)</label><br>
+        <label for="userid">🇮🇩 아이디(email)</label><br>
         <input type="email" id="userid" aria-describedby="emailHelp"
                placeholder="아이디(이메일 형식)를 입력해 주세요."><br>
         {#<button onclick="dplct_check()">아이디 중복검사🔍</button>#}
-        <p class="info">🐶자주 사용하는 이메일 주소를 아이디로 입력해 주세요.</p>
-        <p class="info">아이디로 입력한 이메일은 일정 알림을 받을 때도 활용됩니다!</p>
     </div>
     <br>
     <div class="PW_area">
-        <label for="userpw">비밀번호(pw)</label><br>
+        <label for="userpw">🇵🇼 비밀번호</label><br>
         <input type="password" id="userpw" placeholder="비밀번호를 입력해 주세요.">
     </div>
     <br>
     <div class="NICK_area">
-        <label for="userpw">닉네임</label><br>
+        <label for="userpw">🇳🇮🇨🇰 닉네임</label><br>
         <input type="text" class="form-control" id="usernick" placeholder="닉네임을 입력해 주세요.">
+    </div>
+    <div class="info">
+        <h4>🐕 잠깐만요! 회원가입을 완료하기 전에, 멍이의 Tip을 들어보세요!</h4>
+        <p>🐶 아이디로 입력한 이메일로 '📧이메일 일정 알림'을 보내드립니다!<br>
+            <span style="font-weight: bold">자주 사용하는 이메일 주소</span>를 아이디로 사용해 주세요.</p>
+        <p>🐶 <a href="https://www.kakaocorp.com/service/Kakaomail" style="font-weight: bold"
+                  title="카카오 메일 설명 페이지로 연결됩니다. (가입은 '모바일 카카오톡→더보기→메일')" target="_blank">
+            ✉카카오 메일</a>(@kakao.com)주소로 가입하시면,<br>
+            📧이메일 알림을 받을 때 💬카카오톡 알림도 받을 수 있어요!</p>
+        <p>🐶 스마트폰에서 <span style="font-weight: bold">이메일 어플</span>을 함께 다운받아 사용하시면,<br>
+            📧이메일 알림을 받을 때 📲모바일 알림도 받을 수 있어요!<br>
+            (push 설정 필요)<br>
+            ✉네이버 메일(@naver.com)주소로 가입하면?<br>
+            📱<a href="https://play.google.com/store/apps/details?id=com.nhn.android.mail&hl=ko"
+                 title="구글 플레이스토어의 '네이버 메일'앱 설치 링크입니다(Android 환경)">안드로이드</a>
+            / <a href="https://apps.apple.com/kr/app/%EB%84%A4%EC%9D%B4%EB%B2%84-%EB%A9%94%EC%9D%BC/id582152066"
+                 title="애플 앱스토어의 '네이버 메일'앱 설치 링크입니다(iOS환경)">iOS</a><br>
+            ✉다음 메일(한메일: @hanmail.net)주소로 가입하면?<br>
+            📱<a href="https://play.google.com/store/apps/details?id=net.daum.android.mail&hl=ko"
+                 title="구글 플레이스토어의 '다음 메일'앱 설치 링크입니다(Android 환경)">안드로이드</a>
+            / <a href="https://apps.apple.com/kr/app/%EB%8B%A4%EC%9D%8C-%EB%A9%94%EC%9D%BC-daum-mail/id1455817344"
+                 title="애플 앱스토어의 '다음 메일'앱 설치 링크입니다(iOS환경)">iOS</a><br>
+            ✉구글 메일(Gmail: @gmail.com)주소로 가입하면?<br>
+            📱<a href="https://play.google.com/store/apps/details?id=com.google.android.gm&hl=ko"
+                 title="구글 플레이스토어의 '구글 메일Gmail'앱 설치 링크입니다(Android 환경)">안드로이드</a>
+            / <a href="https://apps.apple.com/kr/app/gmail-google-%EC%9D%B4%EB%A9%94%EC%9D%BC/id422689480"
+                 title="애플 앱스토어의 '구글 메일Gmail'앱 설치 링크입니다(iOS환경)">iOS</a><br>
+        </p>
     </div>
     <br>
     <button onclick="email_check()" style="font-weight: bold">🐩회원가입 완료!</button>

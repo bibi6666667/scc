@@ -5,7 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta property="og:title" content="멍이와 나 Doggo & Me"/>
-    <meta property="og:description" content="일정을 관리하고 알림을 보내주는 당신만의 집사 강아지, '멍이'를 만나 보세요🐕"/>
+    <meta property="og:description" content="일정을 저장하고 이메일로 알림을 보내주는 당신만의 집사 강아지, '멍이'를 만나 보세요🐕"/>
     <meta property="og:image" content="{{ url_for('static', filename='ogimage.png') }}"/>
     <!--Google Web Font-->
     <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet">
@@ -79,16 +79,12 @@
             margin: 10px;
         }
 
-        #user_icon {
-            float: right;
-        }
-
         #month {
             font-weight: bold;
             font-size: 30px;
         }
 
-        #input_sche, #alert_k_input, #alert_e_input {
+        #input_sche, #alert1input, #alert2input, #mobile_info {
             display: none;
         }
 
@@ -103,7 +99,7 @@
                 $('#guest_info').show()
                 alert('"멍이와 나"는 로그인이 필요한 서비스에요. 회원가입/로그인을 해 주세요🐕')
             } else {
-                // 쿠기가 있으면, 유저 정보를 불러옵니다.
+                // 쿠키가 있으면, 유저 정보를 불러옵니다.
                 $('#guest_info').hide()
                 load_user_info()
             }
@@ -112,6 +108,7 @@
             show_day()
             show_1day()
             readsche()
+            $('#layout_buttons').hide()
         });
 
         ///////로그인영역///////
@@ -182,7 +179,7 @@
             }
         }
 
-        function click_open() {
+        function fold_input_sche() {
             if ($('#input_sche').css('display') == 'block') {
                 $('#input_sche').hide();
             } else {
@@ -190,16 +187,34 @@
             }
         }
 
-        function check_open() {
-            if ($('input:checkbox[id="alert_k"]').is(':checked')) {
-                $('#alert_k_input').show();
+        function fold_mobile_info() {
+            if ($('#mobile_info').css('display')=='block') {
+                $('#mobile_info').hide();
             } else {
-                $('#alert_k_input').hide();
+                $('#mobile_info').show();
             }
-            if ($('input:checkbox[id="alert_e"]').is(':checked')) {
-                $('#alert_e_input').show();
+        }
+
+        function check_open() {
+            if ($('input:checkbox[id="alert1"]').is(':checked')) {
+                $('#alert1input').show();
             } else {
-                $('#alert_e_input').hide();
+                $('#alert1input').hide();
+            }
+            if ($('input:checkbox[id="alert2"]').is(':checked')) {
+                $('#alert2input').show();
+            } else {
+                $('#alert2input').hide();
+            }
+            if ($('input:checkbox[id="alert1fix"]').is(':checked')) {
+                $('#alert1inputfix').show();
+            } else {
+                $('#alert1inputfix').hide();
+            }
+            if ($('input:checkbox[id="alert2fix"]').is(':checked')) {
+                $('#alert2inputfix').show();
+            } else {
+                $('#alert2inputfix').hide();
             }
         }
 
@@ -207,6 +222,10 @@
             if (window.event.keyCode == 13) {
                 find_sche();
             }
+        }
+
+        function home() {
+            window.location.href = '/'
         }
 
         function show_1day() {
@@ -234,26 +253,26 @@
         function makesche() {
             if ($('#todo').val() == 0 || $('#start_date').val() == 0) {
                 alert("🐶멍! 할 일과 시작일이 있어야 일정을 저장할 수 있어요!")
-            } else if ($('input:checkbox[id="alert_k"]').is(':checked') && $('#alert_k_date').val() == 0) {
-                alert('🐶 💬카카오톡 알림을 드릴까요? 알림 날짜를 지정해 주세요!')
-            } else if ($('input:checkbox[id="alert_k"]').is(':checked') && $('#alert_k_time').val() == 0) {
-                alert('🐶 💬카카오톡 알림을 드릴까요? 알림 시간도 지정해 주세요!')
-            } else if ($('input:checkbox[id="alert_e"]').is(':checked') && $('#alert_e_date').val() == 0) {
-                alert('🐶 📧이메일 알림을 드릴까요? 알림 날짜를 지정해 주세요!')
-            } else if ($('input:checkbox[id="alert_e"]').is(':checked') && $('#alert_e_time').val() == 0) {
-                alert('🐶 📧이메일 알림을 드릴까요? 알림 시간도 지정해 주세요!')
+            } else if ($('input:checkbox[id="alert1"]').is(':checked') && $('#alert1date').val() == 0) {
+                alert('🐶 📧메일 알림을 드릴까요? 알림 날짜를 지정해 주세요!')
+            } else if ($('input:checkbox[id="alert1"]').is(':checked') && $('#alert1time').val() == 0) {
+                alert('🐶 📧메일 알림을 드릴까요? 알림 시간도 지정해 주세요!')
+            } else if ($('input:checkbox[id="alert2"]').is(':checked') && $('#alert2date').val() == 0) {
+                alert('🐶 📧📧한 번 더 알림을 드릴까요? 알림 날짜를 지정해 주세요!')
+            } else if ($('input:checkbox[id="alert2"]').is(':checked') && $('#alert2time').val() == 0) {
+                alert('🐶 📧📧한 번 더 알림을 드릴까요? 알림 시간도 지정해 주세요!')
             } else {
                 let todo = $('#todo').val();
                 let start_date = $('#start_date').val();
                 let start_time = $('#start_time').val();
                 let end_date = $('#end_date').val();
                 let end_time = $('#end_time').val();
-                let alert_k = $('input:checkbox[id="alert_k"]').is(':checked');
-                let alert_k_date = $('#alert_k_date').val();
-                let alert_k_time = $('#alert_k_time').val();
-                let alert_e = $('input:checkbox[id="alert_e"]').is(':checked');
-                let alert_e_date = $('#alert_e_date').val();
-                let alert_e_time = $('#alert_e_time').val();
+                let alert1 = $('input:checkbox[id="alert1"]').is(':checked');
+                let alert1date = $('#alert1date').val();
+                let alert1time = $('#alert1time').val();
+                let alert2 = $('input:checkbox[id="alert2"]').is(':checked');
+                let alert2date = $('#alert2date').val();
+                let alert2time = $('#alert2time').val();
                 let memo = $('#memo').val();
                 $.ajax({
                     type: "POST",
@@ -264,12 +283,12 @@
                         'start_time': start_time,
                         'end_date': end_date,
                         'end_time': end_time,
-                        'alert_k': alert_k,
-                        'alert_k_date': alert_k_date,
-                        'alert_k_time': alert_k_time,
-                        'alert_e': alert_e,
-                        'alert_e_date': alert_e_date,
-                        'alert_e_time': alert_e_time,
+                        'alert1': alert1,
+                        'alert1date': alert1date,
+                        'alert1time': alert1time,
+                        'alert2': alert2,
+                        'alert2date': alert2date,
+                        'alert2time': alert2time,
                         'memo': memo
                     },
                     success: function (response) { // 성공하면
@@ -301,23 +320,23 @@
                         let end_date = a_sche['end_date']
                         let start_time = a_sche['start_time']
                         let end_time = a_sche['end_time']
-                        let alert_k_date = a_sche['alert_k_date']
-                        let alert_k_time = a_sche['alert_k_time']
-                        let alert_e_date = a_sche['alert_e_date']
-                        let alert_e_time = a_sche['alert_e_time']
+                        let alert1date = a_sche['alert1date']
+                        let alert1time = a_sche['alert1time']
+                        let alert2date = a_sche['alert2date']
+                        let alert2time = a_sche['alert2time']
                         let memo = a_sche['memo']
                         let sche_card = `<div class="sche_card" data-id="${a_sche['_id']['$oid']}">
                                             <div class="schedule_date">${start_date}~${end_date}</div>
-                                            <button onclick="readasche(this)">편집</button>
-                                            <button onclick="delsche(this)">삭제</button>
                                             <li>(${start_time}~${end_time})${todo}</li>
                                             ${memo}
-                                            <li>💬카카오톡 알림 - <span class="alert_k${[i]}"></span><br>
-                                             날짜 : ${alert_k_date}<br>
-                                             시간 : ${alert_k_time}</li>
-                                            <li>📧이메일 알림 - <span class="alert_e${[i]}"></span><br>
-                                             날짜 : ${alert_e_date}<br>
-                                             시간 : ${alert_e_time}</li>
+                                            <li class="alert1">📧이메일 알림(1) - <span class="alert1${[i]}"></span><br>
+                                             날짜 : ${alert1date}<br>
+                                             시간 : ${alert1time}</li>
+                                            <li class="alert2">📧📧이메일 알림(2) - <span class="alert2${[i]}"></span><br>
+                                             날짜 : ${alert2date}<br>
+                                             시간 : ${alert2time}</li>
+                                            <button onclick="readasche(this)">편집✍</button>
+                                            <button onclick="delsche(this)">삭제🗑</button>
                                         </div>`
                         $('#day_layout').append(sche_card);
                     }
@@ -337,17 +356,17 @@
                     let sche_list = response['sche_list'];
                     for (i = 0; i < sche_list.length; i++) {
                         let a_sche = sche_list[i];
-                        let alert_k = a_sche['alert_k']
-                        let alert_e = a_sche['alert_e']
-                        if (alert_k == "true") {
-                            $('.alert_k' + i).append('⭕');
-                        } else if (alert_k == "false") {
-                            $('.alert_k' + i).append('❌')
+                        let alert1 = a_sche['alert1']
+                        let alert2 = a_sche['alert2']
+                        if (alert1 == "true") {
+                            $('.alert1' + i).append('⭕');
+                        } else if (alert1 == "false") {
+                            $('.alert1' + i).append('❌')
                         }
-                        if (alert_e == "true") {
-                            $('.alert_e' + i).append('⭕');
-                        } else if (alert_e == "false") {
-                            $('.alert_e' + i).append('❌')
+                        if (alert2 == "true") {
+                            $('.alert2' + i).append('⭕');
+                        } else if (alert2 == "false") {
+                            $('.alert2' + i).append('❌')
                         }
                     }
                 }
@@ -374,16 +393,16 @@
                                 let searched = searched_list[i];
                                 let searched_card = `<div class="searched_card" data-id="${searched['_id']['$oid']}">
                                             <div class="schedule_date">${searched['start_date']}~${searched['end_date']}</div>
-                                            <button onclick="readasche(this)">편집</button>
-                                            <button onclick="delsche(this)">삭제</button>
                                             <li>(${searched['start_time']}~${searched['end_time']})${searched['todo']}</li>
                                             ${searched['memo']}
-                                            <li class="alert_k">💬카카오톡 알림 - ${searched['alert_k']}<br>
-                                             날짜 : ${searched['alert_k_date']}</span><br>
-                                             시간 : ${searched['alert_k_time']}</li>
-                                            <li class="alert_e">📧이메일 알림 - ${searched['alert_e']}<br>
-                                             날짜 : ${searched['alert_e_date']}</span><br>
-                                             시간 : ${searched['alert_e_time']}</li>
+                                            <li class="alert1">📧이메일 알림(1) - ${searched['alert1']}<br>
+                                             날짜 : ${searched['alert1date']}<br>
+                                             시간 : ${searched['alert1time']}</li>
+                                            <li class="alert2">📧📧이메일 알림(2) - ${searched['alert2']}<br>
+                                             날짜 : ${searched['alert2date']}<br>
+                                             시간 : ${searched['alert2time']}</li>
+                                            <button onclick="readasche(this)">편집✍</button>
+                                            <button onclick="delsche(this)">삭제🗑</button>
                                         </div>`
                                 $('#day_layout').append(searched_card);
                             }
@@ -414,10 +433,10 @@
                         let end_date = fix_todo['end_date']
                         let start_time = fix_todo['start_time']
                         let end_time = fix_todo['end_time']
-                        let alert_k_date = fix_todo['alert_k_date']
-                        let alert_k_time = fix_todo['alert_k_time']
-                        let alert_e_date = fix_todo['alert_e_date']
-                        let alert_e_time = fix_todo['alert_e_time']
+                        let alert1date = fix_todo['alert1date']
+                        let alert1time = fix_todo['alert1time']
+                        let alert2date = fix_todo['alert2date']
+                        let alert2time = fix_todo['alert2time']
                         let memo = fix_todo['memo'];
                         let fix_card = `<div class="fix_card" data-id="${id_fix}">
                                             <div class="schedule_date">
@@ -427,16 +446,19 @@
                                                 ~<input type="time" id="end_time_fix" value="${end_time}">)
                                             </div>
                                             <li><input type="text" id="todo_fix" width="500px" value="${todo}"></li>
-                                            💬카카오톡 알림 : <input type="checkbox" id="alert_k_fix">
-                                            <input type="date" id="alert_k_date_fix" value="${alert_k_date}">,
-                                            <input type="time" id="alert_k_time_fix" value="${alert_k_time}"><br>
-                                            📧이메일 알림 : <input type="checkbox" id="alert_e_fix">
-                                            <input type="date" id="alert_e_date_fix" value="${alert_e_date}">,
-                                            <input type="time" id="alert_e_time_fix" value="${alert_e_time}">
+                                            📧이메일 알림(1)  <input type="checkbox" id="alert1fix" onclick="check_open()"><br>
+                                            <div id="alert1inputfix">
+                                                <input type="date" id="alert1date_fix" value="${alert1date}">,
+                                                <input type="time" id="alert1time_fix" value="${alert1time}"><br>
+                                            </div>
+                                            📧📧이메일 알림(2)  <input type="checkbox" id="alert2fix" onclick="check_open()"><br>
+                                            <div id="alert2inputfix">
+                                                <input type="date" id="alert2date_fix" value="${alert2date}">,
+                                                <input type="time" id="alert2time_fix" value="${alert2time}"><br>
+                                            </div>
                                             <textarea id="memo_fix" cols="30" rows="5">${memo}</textarea><br>
-                                            <button id="readasche" onclick="readasche(this)">편집</button>
-                                            <button id="fixsche" onclick="fixsche(this)">저장🐾</button>
-                                            <button id="delsche" onclick="delsche(this)">삭제</button>
+                                            <button onclick="home()">취소</button>
+                                            <button id="fixsche" onclick="fixsche(this)">편집완료🐾</button>
                                         </div>`
                         $('#day_layout').empty();
                         $('#day_layout').append(fix_card);
@@ -458,17 +480,17 @@
                     response = JSON.parse(response)
                     if (response["result"] == "success") {
                         let fix_todo = response["fix_todo"];
-                        let alert_k = fix_todo['alert_k']
-                        let alert_e = fix_todo['alert_e']
-                        if (alert_k == "true") {
-                            $('#alert_k_fix').attr('checked', true);
-                        } else if (alert_k == "false") {
-                            $('#alert_k_fix').attr('checked', false);
+                        let alert1 = fix_todo['alert1']
+                        let alert2 = fix_todo['alert2']
+                        if (alert1 == "true") {
+                            $('#alert1fix').attr('checked', true);
+                        } else if (alert1 == "false") {
+                            $('#alert1fix').attr('checked', false);
                         }
-                        if (alert_e == "true") {
-                            $('#alert_e_fix').attr('checked', true);
-                        } else if (alert_e == "false") {
-                            $('#alert_e_fix').attr('checked', false);
+                        if (alert2 == "true") {
+                            $('#alert2fix').attr('checked', true);
+                        } else if (alert2 == "false") {
+                            $('#alert2fix').attr('checked', false);
                         }
                     }
                 }
@@ -477,47 +499,59 @@
 
         // 4-2. 일정 변경(Update) - /fixsche (POST)
         function fixsche(e) {
-            let fix_card = $(e).parent();
-            let id = fix_card.attr('data-id');
-            let todo = $('#todo_fix').val();
-            let start_date = $('#start_date_fix').val();
-            let start_time = $('#start_time_fix').val();
-            let end_date = $('#end_date_fix').val();
-            let end_time = $('#end_time_fix').val();
-            let alert_k = $('input:checkbox[id="alert_k_fix"]').is(':checked');
-            let alert_k_date = $('#alert_k_date_fix').val();
-            let alert_k_time = $('#alert_k_time_fix').val();
-            let alert_e = $('input:checkbox[id="alert_e_fix"]').is(':checked');
-            let alert_e_date = $('#alert_e_date_fix').val();
-            let alert_e_time = $('#alert_e_time_fix').val();
-            let memo = $('#memo_fix').val();
-            $.ajax({
-                type: "POST",
-                url: "/fixsche",
-                data: {
-                    'id': id,
-                    'todo': todo,
-                    'start_date': start_date,
-                    'start_time': start_time,
-                    'end_date': end_date,
-                    'end_time': end_time,
-                    'alert_k': alert_k,
-                    'alert_k_date': alert_k_date,
-                    'alert_k_time': alert_k_time,
-                    'alert_e': alert_e,
-                    'alert_e_date': alert_e_date,
-                    'alert_e_time': alert_e_time,
-                    'memo': memo
-                },
-                success: function (response) { // 성공하면
-                    if (response["result"] == "success") {
-                        alert(response["msg"]);
-                        window.location.reload();
-                    } else {
-                        alert('서버 오류!')
+            if ($('#todo_fix').val() == 0 || $('#start_date_fix').val() == 0) {
+                alert("🐶멍! 할 일과 시작일이 있어야 일정을 저장할 수 있어요!")
+            } else if ($('input:checkbox[id="alert1fix"]').is(':checked') && $('#alert1date_fix').val() == 0) {
+                alert('🐶 📧메일 알림을 드릴까요? 알림 날짜를 지정해 주세요!')
+            } else if ($('input:checkbox[id="alert1fix"]').is(':checked') && $('#alert1time_fix').val() == 0) {
+                alert('🐶 📧메일 알림을 드릴까요? 알림 시간도 지정해 주세요!')
+            } else if ($('input:checkbox[id="alert2fix"]').is(':checked') && $('#alert2date_fix').val() == 0) {
+                alert('🐶 📧📧한 번 더 알림을 드릴까요? 알림 날짜를 지정해 주세요!')
+            } else if ($('input:checkbox[id="alert2fix"]').is(':checked') && $('#alert2time_fix').val() == 0) {
+                alert('🐶 📧📧한 번 더 알림을 드릴까요? 알림 시간도 지정해 주세요!')
+            } else {
+                let fix_card = $(e).parent();
+                let id = fix_card.attr('data-id');
+                let todo = $('#todo_fix').val();
+                let start_date = $('#start_date_fix').val();
+                let start_time = $('#start_time_fix').val();
+                let end_date = $('#end_date_fix').val();
+                let end_time = $('#end_time_fix').val();
+                let alert1 = $('input:checkbox[id="alert1fix"]').is(':checked');
+                let alert1date = $('#alert1date_fix').val();
+                let alert1time = $('#alert1time_fix').val();
+                let alert2 = $('input:checkbox[id="alert2fix"]').is(':checked');
+                let alert2date = $('#alert2date_fix').val();
+                let alert2time = $('#alert2time_fix').val();
+                let memo = $('#memo_fix').val();
+                $.ajax({
+                    type: "POST",
+                    url: "/fixsche",
+                    data: {
+                        'id': id,
+                        'todo': todo,
+                        'start_date': start_date,
+                        'start_time': start_time,
+                        'end_date': end_date,
+                        'end_time': end_time,
+                        'alert1': alert1,
+                        'alert1date': alert1date,
+                        'alert1time': alert1time,
+                        'alert2': alert2,
+                        'alert2date': alert2date,
+                        'alert2time': alert2time,
+                        'memo': memo
+                    },
+                    success: function (response) { // 성공하면
+                        if (response["result"] == "success") {
+                            alert(response["msg"]);
+                            window.location.reload();
+                        } else {
+                            alert('서버 오류!')
+                        }
                     }
-                }
-            })
+                })
+            }
         }
 
         //5. 일정 삭제(Delete) - /delsche(POST)
@@ -543,9 +577,8 @@
                 alert('삭제를 취소했습니다!')
             }
         }
-
         //6. 알림 보내기(카톡/이메일) -> alert.py 파일로.
-        //7. 날씨 조회 /weather (GET)
+        //7. 날씨 조회 /weather (GET) - 준비중!
 
     </script>
 </head>
@@ -557,7 +590,7 @@
     </div>
     <div id="guest_info">
         🐶 안녕하세요!<br>
-        '멍이와 나'는 일정을 기록하고 알림을 받을 수 있는 서비스에요.<br>
+        '멍이와 나'는 📝일정을 기록하고, 📧이메일 알림을 받을 수 있는 서비스에요.<br>
         지금
         <button><a href="/login">🐕로그인</a></button>
         또는
@@ -567,37 +600,53 @@
     <div id="header">
         <div id="header_info">
             🐶 <span id="nickname"></span>(<span id="userID"></span>)님, 반가워요!<br>
-            오늘은 <span id="date"></span>, <span id="day"></span>이에요.<br>
-            오늘은 비가 오니 우산을 꼭 챙겨가세요. 멍멍!
+            오늘은 <span id="date"></span>, <span id="day"></span>이에요. 멍멍!<br><br>
+            <button onclick="logout()">로그아웃!👋</button>
         </div>
-        <br>
-        <button onclick="logout()">로그아웃!👋</button>
-        <br><br>
-        <button onclick="click_open()" id="btn-new-sche" type="button">일정을 적어주세요📝
-        </button>
-        <br>
+        <button onclick="fold_mobile_info()">Tip : 📲모바일 알림 받기!</button><br><br>
+        <div id="mobile_info">
+            <p>🐕'멍이와 나'에 가입한 아이디(이메일 주소)를 활용해<br>
+            스마트폰에서 모바일 알림을 받을 수 있어요!<br>
+                (단, 스마트폰에서 push알림을 설정해 주어야 해요!)</p>
+            <p>✉카카오 메일(@kakao.com) <br>- 연결된 카카오톡 계정으로 💬카톡 알림이 와요.</p>
+            <p>✉네이버 메일(@naver.com) <br>- '네이버 메일' 모바일 앱을 설치해야 해요.<br>
+            📱<a href="https://play.google.com/store/apps/details?id=com.nhn.android.mail&hl=ko"
+                 title="구글 플레이스토어의 '네이버 메일'앱 설치 링크입니다(Android 환경)">안드로이드</a>
+            / <a href="https://apps.apple.com/kr/app/%EB%84%A4%EC%9D%B4%EB%B2%84-%EB%A9%94%EC%9D%BC/id582152066"
+                 title="애플 앱스토어의 '네이버 메일'앱 설치 링크입니다(iOS환경)">iOS</a></p>
+            <p>✉다음 메일(한메일: @hanmail.net) <br>- '다음 메일' 모바일 앱을 설치해야 해요.<br>
+            📱<a href="https://play.google.com/store/apps/details?id=net.daum.android.mail&hl=ko"
+                 title="구글 플레이스토어의 '다음 메일'앱 설치 링크입니다(Android 환경)">안드로이드</a>
+            / <a href="https://apps.apple.com/kr/app/%EB%8B%A4%EC%9D%8C-%EB%A9%94%EC%9D%BC-daum-mail/id1455817344"
+                 title="애플 앱스토어의 '다음 메일'앱 설치 링크입니다(iOS환경)">iOS</a></p>
+            <p>✉구글 메일(Gmail: @gmail.com) <br>- 'Gmail' 모바일 앱을 설치해야 해요.<br>
+            📱<a href="https://play.google.com/store/apps/details?id=com.google.android.gm&hl=ko"
+                 title="구글 플레이스토어의 '구글 메일Gmail'앱 설치 링크입니다(Android 환경)">안드로이드</a>
+            / <a href="https://apps.apple.com/kr/app/gmail-google-%EC%9D%B4%EB%A9%94%EC%9D%BC/id422689480"
+                 title="애플 앱스토어의 '구글 메일Gmail'앱 설치 링크입니다(iOS환경)">iOS</a></p>
+        </div>
+        <button onclick="fold_input_sche()">일정을 적어보세요📝</button><br><br>
         <div id="input_sche">
-            <h3>📝어떤 일정을 적어둘까요?</h3><br>
-            <input type="text" width="300px" id="todo" placeholder="멍멍! 할 일이 뭔가요?"><br><br>
+            <h4>📝어떤 일정을 적어둘까요?</h4><br>
+            <input type="text" width="300px" id="todo" placeholder="🐶할 일이 뭔가요?"><br><br>
             언제부터 해야 하나요?(시작일)<br>
             <input type="date" id="start_date"><input type="time" id="start_time"> <br><br>
             언제까지 해야 하나요?(종료일)<br>
-            <input type="date" id="end_date"><input type="time" id="end_time"><br>
-            <h3>✅잊지 않게 알려드릴게요!</h3><br>
-            💬카카오톡 메시지로 알려줘 <input type="checkbox" id="alert_k" onclick="check_open()"><br><br>
-            <div id="alert_k_input">
-                <input type="date" id="alert_k_date">
-                <input type="time" id="alert_k_time"><br><br>
+            <input type="date" id="end_date"><input type="time" id="end_time"><br><br><br>
+            <h4>✅잊지 않게 알려드릴게요!</h4><br>
+            📧 이메일을 보내서 알려줘 <input type="checkbox" id="alert1" onclick="check_open()"><br><br>
+            <div id="alert1input">
+                <input type="date" id="alert1date">
+                <input type="time" id="alert1time"><br><br>
             </div>
-            📧이메일을 보내서 알려줘 <input type="checkbox" id="alert_e" onclick="check_open()"><br><br>
-            <div id="alert_e_input">
-                <input type="date" id="alert_e_date">
-                <input type="time" id="alert_e_time"><br><br>
+            📧📧 이메일로 한 번 더 알려줘 <input type="checkbox" id="alert2" onclick="check_open()"><br><br>
+            <div id="alert2input">
+                <input type="date" id="alert2date">
+                <input type="time" id="alert2time"><br><br>
             </div>
             <textarea id="memo" placeholder="메모를 더 남길 수 있어요. 멍!" cols="30" rows="5"></textarea><br><br>
             <input type="submit" onclick="makesche()" value="저장!🐾">
-        </div>
-        <br>
+        </div><br>
         <div id="layout_buttons">
             <a href="#" onclick="show_1day()"><img class="icon" src="../static/calendar_1.png" alt="1일 레이아웃 아이콘"></a>
             <a href="#" onclick="show_7day()"><img class="icon" src="../static/calendar_7.png" alt="7일 레이아웃 아이콘"></a>
@@ -612,18 +661,19 @@
         <div id="day_layout">
             <div class="sche_card" data-id="${a_sche['_id']['$oid']}">
                 <div class="schedule_date">start_date~end_date</div>
-                <button onclick="readasche(this)">편집</button>
-                <button onclick="delsche(this)">삭제</button>
+                <button onclick="readasche(this)">편집✍</button>
+                <button onclick="delsche(this)">삭제🗑</button>
                 <li>(start_time~end_time)todo</li>
                 memo
-                <li>💬카카오톡 알림 - <span class="alert_k"></span><br>
-                    날짜 : alert_k_date<br>
-                    시간 : alert_k_time
+                <li>📧이메일 알림 (1) - <span class="alert1"></span><br>
+                    날짜 : alert1date<br>
+                    시간 : alert1time
                 </li>
-                <li>📧이메일 알림 - <span class="alert_e${[i]}"></span><br>
-                    날짜 : alert_e_date<br>
-                    시간 : alert_e_time
+                <li>📧📧 이메일 알림 (2)- <span class="alert2"></span><br>
+                    날짜 : alert2date<br>
+                    시간 : alert2time
                 </li>
+
             </div>
         </div>
         <div id="week_layout">
